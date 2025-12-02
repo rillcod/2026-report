@@ -1203,137 +1203,152 @@ export function UnifiedSingleReport(props: UnifiedSingleReportProps) {
 
                 {/* Behavioral Assessment */}
                 <Card className="border-blue-200">
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-lg flex items-center gap-2">
-                      <MessageSquare className="h-5 w-5 text-blue-600" />
+                  <CardHeader className="pb-3 px-3 sm:px-6">
+                    <CardTitle className="text-base sm:text-lg flex items-center gap-2">
+                      <MessageSquare className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
                       Behavioral Assessment
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-4">
-                    {/* Class Participation */}
-                    <div className="space-y-2">
-                      <Label className="text-sm font-medium flex items-center gap-2">
-                        <MessageSquare className="h-4 w-4 text-blue-500" />
-                        Class Participation
-                      </Label>
-                      <Select
-                        value={formData.participation}
-                        onValueChange={(value) => handleInputChange("participation", value)}
-                      >
-                        <SelectTrigger className="border-blue-200 focus:border-blue-400">
-                          <SelectValue placeholder="Select participation level" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {participationLevels.map((level) => (
-                            <SelectItem key={level.value} value={level.label}>
-                              <div className="flex flex-col">
-                                <span className="font-medium">{level.label}</span>
-                                <span className="text-xs text-gray-500">{level.description}</span>
-                              </div>
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      {formData.participation && (
-                        <div className="text-xs text-green-600 flex items-center gap-1">
-                          <Check className="h-3 w-3" />
-                          <span>Selected: {formData.participation}</span>
-                        </div>
-                      )}
+                  <CardContent className="space-y-3 sm:space-y-4 px-3 sm:px-6 pb-4 sm:pb-6">
+                    {/* Responsive Grid Layout */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+                      {/* Class Participation */}
+                      <div className="space-y-2">
+                        <Label className="text-xs sm:text-sm font-medium flex items-center gap-1.5 sm:gap-2">
+                          <MessageSquare className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-blue-500 flex-shrink-0" />
+                          <span className="truncate">Class Participation</span>
+                        </Label>
+                        <Select
+                          value={formData.participation}
+                          onValueChange={(value) => handleInputChange("participation", value)}
+                        >
+                          <SelectTrigger className="h-10 sm:h-11 border-blue-200 focus:border-blue-400 text-sm w-full touch-manipulation">
+                            <SelectValue placeholder="Select level" />
+                          </SelectTrigger>
+                          <SelectContent className="max-h-[300px] overflow-y-auto">
+                            {participationLevels.map((level) => (
+                              <SelectItem 
+                                key={level.value} 
+                                value={level.label}
+                                className="py-2.5 sm:py-3 touch-manipulation"
+                              >
+                                <div className="flex flex-col gap-0.5">
+                                  <span className="font-medium text-sm">{level.label}</span>
+                                  <span className="text-xs text-gray-500 leading-tight">{level.description}</span>
+                                </div>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        {formData.participation && (
+                          <div className="text-xs text-green-600 flex items-center gap-1.5 flex-wrap">
+                            <Check className="h-3 w-3 flex-shrink-0" />
+                            <span className="truncate">Selected: {formData.participation}</span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Project Completion */}
+                      <div className="space-y-2">
+                        <Label className="text-xs sm:text-sm font-medium flex items-center gap-1.5 sm:gap-2">
+                          <Target className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-blue-500 flex-shrink-0" />
+                          <span className="truncate">Project Completion</span>
+                        </Label>
+                        <Select
+                          value={formData.projectCompletion}
+                          onValueChange={(value) => handleInputChange("projectCompletion", value)}
+                        >
+                          <SelectTrigger className="h-10 sm:h-11 border-blue-200 focus:border-blue-400 text-sm w-full touch-manipulation">
+                            <SelectValue placeholder="Select status" />
+                          </SelectTrigger>
+                          <SelectContent className="max-h-[300px] overflow-y-auto">
+                            {completionLevels.map((level) => (
+                              <SelectItem 
+                                key={level.value} 
+                                value={level.label}
+                                className="py-2.5 sm:py-3 touch-manipulation"
+                              >
+                                <div className="flex flex-col gap-0.5">
+                                  <span className="font-medium text-sm">{level.label}</span>
+                                  <span className="text-xs text-gray-500 leading-tight">{level.description}</span>
+                                </div>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        {formData.projectCompletion && (
+                          <div className="text-xs text-green-600 flex items-center gap-1.5 flex-wrap">
+                            <Check className="h-3 w-3 flex-shrink-0" />
+                            <span className="truncate">Selected: {formData.projectCompletion}</span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Homework Completion */}
+                      <div className="space-y-2 md:col-span-2 lg:col-span-1">
+                        <Label className="text-xs sm:text-sm font-medium flex items-center gap-1.5 sm:gap-2">
+                          <BookOpen className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-blue-500 flex-shrink-0" />
+                          <span className="truncate">Homework Completion</span>
+                        </Label>
+                        <Select
+                          value={formData.homeworkCompletion}
+                          onValueChange={(value) => handleInputChange("homeworkCompletion", value)}
+                        >
+                          <SelectTrigger className="h-10 sm:h-11 border-blue-200 focus:border-blue-400 text-sm w-full touch-manipulation">
+                            <SelectValue placeholder="Select status" />
+                          </SelectTrigger>
+                          <SelectContent className="max-h-[300px] overflow-y-auto">
+                            {completionLevels.map((level) => (
+                              <SelectItem 
+                                key={level.value} 
+                                value={level.label}
+                                className="py-2.5 sm:py-3 touch-manipulation"
+                              >
+                                <div className="flex flex-col gap-0.5">
+                                  <span className="font-medium text-sm">{level.label}</span>
+                                  <span className="text-xs text-gray-500 leading-tight">{level.description}</span>
+                                </div>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        {formData.homeworkCompletion && (
+                          <div className="text-xs text-green-600 flex items-center gap-1.5 flex-wrap">
+                            <Check className="h-3 w-3 flex-shrink-0" />
+                            <span className="truncate">Selected: {formData.homeworkCompletion}</span>
+                          </div>
+                        )}
+                      </div>
                     </div>
 
-                    {/* Project Completion */}
-                    <div className="space-y-2">
-                      <Label className="text-sm font-medium flex items-center gap-2">
-                        <Target className="h-4 w-4 text-blue-500" />
-                        Project Completion
-                      </Label>
-                      <Select
-                        value={formData.projectCompletion}
-                        onValueChange={(value) => handleInputChange("projectCompletion", value)}
-                      >
-                        <SelectTrigger className="border-blue-200 focus:border-blue-400">
-                          <SelectValue placeholder="Select completion status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {completionLevels.map((level) => (
-                            <SelectItem key={level.value} value={level.label}>
-                              <div className="flex flex-col">
-                                <span className="font-medium">{level.label}</span>
-                                <span className="text-xs text-gray-500">{level.description}</span>
-                              </div>
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      {formData.projectCompletion && (
-                        <div className="text-xs text-green-600 flex items-center gap-1">
-                          <Check className="h-3 w-3" />
-                          <span>Selected: {formData.projectCompletion}</span>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Homework Completion */}
-                    <div className="space-y-2">
-                      <Label className="text-sm font-medium flex items-center gap-2">
-                        <BookOpen className="h-4 w-4 text-blue-500" />
-                        Homework Completion
-                      </Label>
-                      <Select
-                        value={formData.homeworkCompletion}
-                        onValueChange={(value) => handleInputChange("homeworkCompletion", value)}
-                      >
-                        <SelectTrigger className="border-blue-200 focus:border-blue-400">
-                          <SelectValue placeholder="Select completion status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {completionLevels.map((level) => (
-                            <SelectItem key={level.value} value={level.label}>
-                              <div className="flex flex-col">
-                                <span className="font-medium">{level.label}</span>
-                                <span className="text-xs text-gray-500">{level.description}</span>
-                              </div>
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      {formData.homeworkCompletion && (
-                        <div className="text-xs text-green-600 flex items-center gap-1">
-                          <Check className="h-3 w-3" />
-                          <span>Selected: {formData.homeworkCompletion}</span>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Summary */}
+                    {/* Summary - Responsive */}
                     {(formData.participation || formData.projectCompletion || formData.homeworkCompletion) && (
-                      <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
-                        <h4 className="font-medium text-blue-900 mb-2 flex items-center gap-2">
-                          <BarChart3 className="h-4 w-4" />
+                      <div className="mt-3 sm:mt-4 p-3 sm:p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <h4 className="font-medium text-blue-900 mb-2 sm:mb-3 flex items-center gap-1.5 sm:gap-2 text-sm sm:text-base">
+                          <BarChart3 className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0" />
                           Assessment Summary
                         </h4>
-                        <div className="space-y-2">
+                        <div className="space-y-2 sm:space-y-2.5">
                           {formData.participation && (
-                            <div className="flex items-center justify-between">
-                              <span className="text-sm text-gray-600">Participation:</span>
-                              <Badge variant="outline" className="bg-white text-xs">
+                            <div className="flex items-center justify-between gap-2 flex-wrap">
+                              <span className="text-xs sm:text-sm text-gray-600">Participation:</span>
+                              <Badge variant="outline" className="bg-white text-xs px-2 py-0.5 sm:px-2.5 sm:py-1 whitespace-nowrap">
                                 {formData.participation}
                               </Badge>
                             </div>
                           )}
                           {formData.projectCompletion && (
-                            <div className="flex items-center justify-between">
-                              <span className="text-sm text-gray-600">Projects:</span>
-                              <Badge variant="outline" className="bg-white text-xs">
+                            <div className="flex items-center justify-between gap-2 flex-wrap">
+                              <span className="text-xs sm:text-sm text-gray-600">Projects:</span>
+                              <Badge variant="outline" className="bg-white text-xs px-2 py-0.5 sm:px-2.5 sm:py-1 whitespace-nowrap">
                                 {formData.projectCompletion}
                               </Badge>
                             </div>
                           )}
                           {formData.homeworkCompletion && (
-                            <div className="flex items-center justify-between">
-                              <span className="text-sm text-gray-600">Homework:</span>
-                              <Badge variant="outline" className="bg-white text-xs">
+                            <div className="flex items-center justify-between gap-2 flex-wrap">
+                              <span className="text-xs sm:text-sm text-gray-600">Homework:</span>
+                              <Badge variant="outline" className="bg-white text-xs px-2 py-0.5 sm:px-2.5 sm:py-1 whitespace-nowrap">
                                 {formData.homeworkCompletion}
                               </Badge>
                             </div>
@@ -1736,7 +1751,7 @@ export function UnifiedSingleReport(props: UnifiedSingleReportProps) {
                         onChange={(e) => handleInputChange("strengths", e.target.value)}
                         placeholder="Describe the student's key strengths and positive attributes..."
                         rows={4}
-                        className="border-green-200 focus:border-green-400 bg-white dark:bg-slate-900/60 dark:text-foreground"
+                        className="border-green-200 focus:border-green-400 bg-white dark:bg-slate-900/60 dark:text-foreground text-sm sm:text-base resize-y min-h-[100px] touch-manipulation"
                       />
                     </CardContent>
                   </Card>
@@ -1782,7 +1797,7 @@ export function UnifiedSingleReport(props: UnifiedSingleReportProps) {
                         onChange={(e) => handleInputChange("growth", e.target.value)}
                         placeholder="Identify areas where the student can improve..."
                         rows={4}
-                        className="border-orange-200 focus:border-orange-400 bg-white dark:bg-slate-900/60 dark:text-foreground"
+                        className="border-orange-200 focus:border-orange-400 bg-white dark:bg-slate-900/60 dark:text-foreground text-sm sm:text-base resize-y min-h-[100px] touch-manipulation"
                       />
                     </CardContent>
                   </Card>
@@ -1824,7 +1839,7 @@ export function UnifiedSingleReport(props: UnifiedSingleReportProps) {
                       onChange={(e) => handleInputChange("comments", e.target.value)}
                       placeholder="Overall instructor evaluation and comments..."
                       rows={4}
-                      className="border-blue-200 focus:border-blue-400 bg-white dark:bg-slate-900/60 dark:text-foreground"
+                      className="border-blue-200 focus:border-blue-400 bg-white dark:bg-slate-900/60 dark:text-foreground text-sm sm:text-base resize-y min-h-[100px] touch-manipulation"
                     />
                   </CardContent>
                 </Card>
