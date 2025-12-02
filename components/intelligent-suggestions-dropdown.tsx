@@ -26,7 +26,8 @@ import {
   Lightbulb,
   Star,
   CheckCircle,
-  Wand2
+  Wand2,
+  X
 } from "lucide-react"
 
 interface SuggestionItem {
@@ -362,17 +363,30 @@ export function IntelligentSuggestionsDropdown({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent 
-        className="w-[calc(100vw-2rem)] sm:w-96 md:w-[28rem] p-0 max-h-[85vh] sm:max-h-[80vh] flex flex-col" 
+        className="w-[calc(100vw-2rem)] sm:w-96 md:w-[28rem] p-0 max-h-[85vh] sm:max-h-[80vh] flex flex-col z-[100]" 
         align="start"
         sideOffset={4}
+        onInteractOutside={(e) => {
+          // Allow closing by clicking outside
+          setIsOpen(false)
+        }}
       >
         <div className="p-3 sm:p-4 border-b flex-shrink-0">
           <div className="flex items-center gap-2 mb-2 sm:mb-3 flex-wrap">
             <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-purple-500 flex-shrink-0" />
-            <h3 className="font-medium text-sm sm:text-base">Intelligent Suggestions</h3>
-            <Badge variant="outline" className="ml-auto text-xs">
+            <h3 className="font-medium text-sm sm:text-base flex-1">Intelligent Suggestions</h3>
+            <Badge variant="outline" className="text-xs">
               {filteredSuggestions.length} available
             </Badge>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsOpen(false)}
+              className="h-6 w-6 p-0 flex-shrink-0 touch-manipulation"
+              aria-label="Close"
+            >
+              <X className="h-4 w-4" />
+            </Button>
           </div>
           <div className="relative">
             <Search className="absolute left-2.5 sm:left-3 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 sm:h-4 sm:w-4 text-gray-400" />

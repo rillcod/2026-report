@@ -1719,7 +1719,7 @@ export function UnifiedSingleReport(props: UnifiedSingleReportProps) {
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3">
-                      <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:gap-2">
+                      <div className="flex flex-row items-center gap-2">
                         <div className="flex-1 min-w-0">
                           <IntelligentSuggestionsDropdown
                             type="strengths"
@@ -1764,7 +1764,7 @@ export function UnifiedSingleReport(props: UnifiedSingleReportProps) {
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3">
-                      <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:gap-2">
+                      <div className="flex flex-row items-center gap-2">
                         <div className="flex-1 min-w-0">
                           <IntelligentSuggestionsDropdown
                             type="growth"

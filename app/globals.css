@@ -163,6 +163,41 @@
   box-sizing: border-box !important;
 }
 
+/* Force desktop layout for PDF generation - prevent field stacking */
+.pdf-force-desktop * {
+  flex-direction: row !important;
+}
+
+.pdf-force-desktop .flex-col {
+  flex-direction: row !important;
+}
+
+.pdf-force-desktop .grid-cols-1 {
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
+}
+
+@media (max-width: 768px) {
+  .pdf-force-desktop {
+    /* Override mobile styles for PDF */
+    min-width: 210mm !important;
+    width: 210mm !important;
+  }
+  
+  .pdf-force-desktop * {
+    /* Prevent stacking in PDF mode */
+    flex-direction: row !important;
+    display: block !important;
+  }
+  
+  .pdf-force-desktop .flex-col {
+    flex-direction: row !important;
+  }
+  
+  .pdf-force-desktop .grid-cols-1 {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
 /* Mobile preview container - allows scrolling but maintains fixed layout */
 @media (max-width: 768px) {
   .report-preview-container {

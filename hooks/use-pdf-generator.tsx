@@ -32,14 +32,39 @@ export function usePDFGenerator() {
       setGenerationProgress(0)
 
       try {
-        // Apply compact spacing class for PDF generation
-        element.classList.add("pdf-compact-mode")
+        // Force desktop layout for consistent PDF output regardless of device
+        const originalClasses = element.className
+        element.classList.add("pdf-compact-mode", "pdf-desktop-layout", "pdf-force-desktop")
         if (options.tier === "hd") {
           element.classList.add("hd-mode")
         }
         
+        // Force desktop viewport for PDF generation
+        const originalWidth = element.style.width
+        const originalMinWidth = element.style.minWidth
+        const originalMaxWidth = element.style.maxWidth
+        
+        // Ensure fixed A4 dimensions and prevent responsive stacking
+        element.style.width = "210mm"
+        element.style.minWidth = "210mm"
+        element.style.maxWidth = "210mm"
+        
+        // Force desktop layout - prevent mobile stacking
+        const allChildren = element.querySelectorAll('*')
+        allChildren.forEach((child: any) => {
+          if (child.style) {
+            // Preserve original display if set
+            const originalDisplay = child.style.display
+            // Force desktop layout (no stacking)
+            if (window.innerWidth < 768) {
+              // On mobile, force desktop layout for PDF
+              child.style.setProperty('display', originalDisplay || 'block', 'important')
+            }
+          }
+        })
+        
         // Small delay to ensure CSS is applied
-        await new Promise(resolve => setTimeout(resolve, 50))
+        await new Promise(resolve => setTimeout(resolve, 150))
 
         // Step 1: Capture element as canvas (25% progress)
         setGenerationProgress(25)
