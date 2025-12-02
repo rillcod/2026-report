@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Switch } from "@/components/ui/switch"
 import { ReportContent } from "@/components/report-content"
@@ -40,6 +41,10 @@ import {
   Check,
   Camera,
   X,
+  ZoomIn,
+  ZoomOut,
+  Maximize2,
+  RotateCcw,
 } from "lucide-react"
 
 interface UnifiedSingleReportProps {
@@ -173,6 +178,10 @@ export function UnifiedSingleReport(props: UnifiedSingleReportProps) {
   const [aiGenerationActive, setAiGenerationActive] = useState(false)
   const [currentSubject, setCurrentSubject] = useState("Programming")
   const [studentPerformanceLevel, setStudentPerformanceLevel] = useState("B")
+  const [selectedProgressCourse, setSelectedProgressCourse] = useState<string>("")
+  const [selectedProgressItems, setSelectedProgressItems] = useState<Set<string>>(new Set())
+  const [previewZoom, setPreviewZoom] = useState(100)
+  const previewContainerRef = useRef<HTMLDivElement>(null)
   
   const reportRef = useRef<HTMLDivElement>(null)
   const photoInputRef = useRef<HTMLInputElement>(null)
@@ -187,9 +196,10 @@ export function UnifiedSingleReport(props: UnifiedSingleReportProps) {
       ...settings,
       courseName: formData.courseName || settings.courseName,
       currentModule: formData.currentModule || settings.currentModule,
+      nextModule: formData.nextModule || settings.nextModule,
       duration: formData.duration || settings.duration,
     }),
-    [settings, formData.courseName, formData.currentModule, formData.duration],
+    [settings, formData.courseName, formData.currentModule, formData.nextModule, formData.duration],
   )
 
   // Enhanced auto-save functionality
@@ -202,6 +212,37 @@ export function UnifiedSingleReport(props: UnifiedSingleReportProps) {
 
     return () => clearTimeout(autoSaveTimer)
   }, [formData])
+
+  // Auto-fit preview on open and handle resize
+  useEffect(() => {
+    const calculateFitZoom = () => {
+      if (showPreview && previewContainerRef.current) {
+        const containerWidth = previewContainerRef.current.clientWidth - 32 // Account for padding
+        const reportWidth = 210 * 3.779527559 // Convert mm to px
+        const fitZoom = Math.floor((containerWidth / reportWidth) * 100)
+        return Math.max(50, Math.min(100, fitZoom))
+      }
+      return 100
+    }
+
+    if (showPreview) {
+      // Initial fit
+      const fitZoom = calculateFitZoom()
+      setPreviewZoom(fitZoom)
+
+      // Handle window resize
+      const handleResize = () => {
+        const fitZoom = calculateFitZoom()
+        // Only auto-fit if zoom is close to previous fit (within 10%)
+        if (Math.abs(previewZoom - fitZoom) < 10) {
+          setPreviewZoom(fitZoom)
+        }
+      }
+
+      window.addEventListener('resize', handleResize)
+      return () => window.removeEventListener('resize', handleResize)
+    }
+  }, [showPreview, previewZoom])
 
   const handleAutoSave = async () => {
     setIsAutoSaving(true)
@@ -364,6 +405,14 @@ export function UnifiedSingleReport(props: UnifiedSingleReportProps) {
   }
 
   const addProgressItem = () => {
+    if (formData.progressItems.length >= 3) {
+      toast({
+        title: "Maximum Limit Reached",
+        description: "You can only add up to 3 progress items",
+        variant: "destructive",
+      })
+      return
+    }
     const newItem = "New Topic: Description"
     setFormData((prev) => ({
       ...prev,
@@ -379,6 +428,14 @@ export function UnifiedSingleReport(props: UnifiedSingleReportProps) {
   }
 
   const removeProgressItem = (index: number) => {
+    if (formData.progressItems.length <= 1) {
+      toast({
+        title: "Minimum Required",
+        description: "At least 1 progress item is required",
+        variant: "destructive",
+      })
+      return
+    }
     setFormData((prev) => ({
       ...prev,
       progressItems: prev.progressItems.filter((_, i) => i !== index),
@@ -733,35 +790,35 @@ export function UnifiedSingleReport(props: UnifiedSingleReportProps) {
           <CardContent className="p-6">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
               {/* Enhanced Tab Navigation */}
-              <div className="bg-white border border-blue-200 rounded-xl p-2">
-                <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 bg-transparent gap-2 h-auto">
+              <div className="bg-white border border-blue-200 rounded-xl p-1 sm:p-2">
+                <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 bg-transparent gap-1 sm:gap-2 h-auto">
                   <TabsTrigger 
                     value="basic" 
-                    className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-blue-700 data-[state=active]:text-white data-[state=active]:shadow-md flex flex-col sm:flex-row items-center gap-2 py-3 px-4 rounded-lg transition-all duration-200 hover:bg-blue-50"
+                    className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-blue-700 data-[state=active]:text-white data-[state=active]:shadow-md flex flex-col items-center justify-center gap-1 sm:gap-2 py-2 sm:py-3 px-2 sm:px-4 rounded-lg transition-all duration-200 hover:bg-blue-50 text-[10px] sm:text-xs md:text-sm"
                   >
-                    <User className="h-4 w-4" />
-                    <span className="text-xs sm:text-sm font-medium">Basic Info</span>
+                    <User className="h-3 w-3 sm:h-4 sm:w-4 shrink-0" />
+                    <span className="font-medium text-center leading-tight">Basic Info</span>
                   </TabsTrigger>
                   <TabsTrigger 
                     value="scores" 
-                    className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-600 data-[state=active]:to-green-700 data-[state=active]:text-white data-[state=active]:shadow-md flex flex-col sm:flex-row items-center gap-2 py-3 px-4 rounded-lg transition-all duration-200 hover:bg-green-50"
+                    className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-600 data-[state=active]:to-green-700 data-[state=active]:text-white data-[state=active]:shadow-md flex flex-col items-center justify-center gap-1 sm:gap-2 py-2 sm:py-3 px-2 sm:px-4 rounded-lg transition-all duration-200 hover:bg-green-50 text-[10px] sm:text-xs md:text-sm"
                   >
-                    <Target className="h-4 w-4" />
-                    <span className="text-xs sm:text-sm font-medium">Scores</span>
+                    <Target className="h-3 w-3 sm:h-4 sm:w-4 shrink-0" />
+                    <span className="font-medium text-center leading-tight">Scores</span>
                   </TabsTrigger>
                   <TabsTrigger
                     value="progress"
-                    className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-purple-700 data-[state=active]:text-white data-[state=active]:shadow-md flex flex-col sm:flex-row items-center gap-2 py-3 px-4 rounded-lg transition-all duration-200 hover:bg-purple-50"
+                    className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-purple-700 data-[state=active]:text-white data-[state=active]:shadow-md flex flex-col items-center justify-center gap-1 sm:gap-2 py-2 sm:py-3 px-2 sm:px-4 rounded-lg transition-all duration-200 hover:bg-purple-50 text-[10px] sm:text-xs md:text-sm"
                   >
-                    <BookOpen className="h-4 w-4" />
-                    <span className="text-xs sm:text-sm font-medium">Progress</span>
+                    <BookOpen className="h-3 w-3 sm:h-4 sm:w-4 shrink-0" />
+                    <span className="font-medium text-center leading-tight">Progress</span>
                   </TabsTrigger>
                   <TabsTrigger
                     value="evaluation"
-                    className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-600 data-[state=active]:to-orange-700 data-[state=active]:text-white data-[state=active]:shadow-md flex flex-col sm:flex-row items-center gap-2 py-3 px-4 rounded-lg transition-all duration-200 hover:bg-orange-50"
+                    className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-600 data-[state=active]:to-orange-700 data-[state=active]:text-white data-[state=active]:shadow-md flex flex-col items-center justify-center gap-1 sm:gap-2 py-2 sm:py-3 px-2 sm:px-4 rounded-lg transition-all duration-200 hover:bg-orange-50 text-[10px] sm:text-xs md:text-sm"
                   >
-                    <MessageSquare className="h-4 w-4" />
-                    <span className="text-xs sm:text-sm font-medium">Evaluation</span>
+                    <MessageSquare className="h-3 w-3 sm:h-4 sm:w-4 shrink-0" />
+                    <span className="font-medium text-center leading-tight">Evaluation</span>
                   </TabsTrigger>
                 </TabsList>
               </div>
@@ -904,7 +961,15 @@ export function UnifiedSingleReport(props: UnifiedSingleReportProps) {
                           id="currentModule"
                           value={formData.currentModule || ""}
                           onChange={(e) => handleInputChange("currentModule", e.target.value)}
-                          placeholder="e.g., JavaScript Basics, Data Structures"
+                          className="border-blue-200 focus:border-blue-400 focus:ring-blue-400 transition-colors"
+                        />
+                      </div>
+                      <div className="space-y-3">
+                        <Label htmlFor="nextModule" className="text-sm font-semibold text-gray-700">Next Module</Label>
+                        <Input
+                          id="nextModule"
+                          value={formData.nextModule || ""}
+                          onChange={(e) => handleInputChange("nextModule", e.target.value)}
                           className="border-blue-200 focus:border-blue-400 focus:ring-blue-400 transition-colors"
                         />
                       </div>
@@ -1303,92 +1368,34 @@ export function UnifiedSingleReport(props: UnifiedSingleReportProps) {
                         variant="outline"
                         size="sm"
                         onClick={addProgressItem}
-                        className="border-green-200 text-green-700 hover:bg-green-50 w-full sm:w-auto"
+                        disabled={formData.progressItems.length >= 3}
+                        className="border-green-200 text-green-700 hover:bg-green-50 w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         <Plus className="h-4 w-4 mr-2" />
-                        Add Item
+                        Add Item {formData.progressItems.length >= 3 ? "(Max 3)" : `(${formData.progressItems.length}/3)`}
                       </Button>
                     </div>
 
-                    {/* Quick Course Templates */}
+                    {/* Course Progress Selection */}
                     <Card className="p-4 bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
-                      <div className="space-y-3">
+                      <div className="space-y-4">
                         <h4 className="font-medium text-gray-900 flex items-center gap-2">
                           <BookOpen className="h-4 w-4 text-blue-600" />
-                          Quick Course Templates
+                          Select Course Progress Items (Choose up to 3)
                         </h4>
                         
+                        {/* Course Selector */}
                         <div className="space-y-2">
-                          <Select onValueChange={(value) => {
-                            const courseTemplates = {
-                              python: [
-                                "Variables & Data Types: Successfully implemented string, integer, and boolean variables",
-                                "Control Structures: Mastered if-else statements and conditional logic",
-                                "Loops: Demonstrated proficiency with for and while loops",
-                                "Functions: Created reusable functions with parameters and return values",
-                                "Debugging: Developed systematic approach to identifying and fixing errors"
-                              ],
-                              webdev: [
-                                "HTML5 Fundamentals: Created semantic web pages with proper structure",
-                                "CSS Styling: Applied responsive design principles and modern layouts",
-                                "JavaScript Basics: Implemented interactive features and DOM manipulation",
-                                "React Components: Built reusable UI components with props and state",
-                                "API Integration: Successfully connected frontend to REST APIs"
-                              ],
-                              scratch: [
-                                "Visual Programming: Mastered block-based coding concepts and logic flow",
-                                "Game Development: Created interactive games with sprites and animations",
-                                "Event Handling: Implemented user input and interactive controls",
-                                "Creative Projects: Designed engaging stories and educational simulations",
-                                "Problem Solving: Demonstrated computational thinking and algorithm design"
-                              ],
-                              mobile: [
-                                "Mobile UI/UX: Designed responsive interfaces following platform guidelines",
-                                "Cross-Platform Dev: Built apps using React Native and Flutter",
-                                "API Integration: Connected mobile apps to cloud services and databases",
-                                "Device Features: Utilized camera, GPS, and native device capabilities",
-                                "App Store Deploy: Successfully published apps to Google Play and App Store"
-                              ],
-                              datascience: [
-                                "Data Analysis: Processed datasets using Pandas and NumPy libraries",
-                                "Data Visualization: Created insightful charts using Matplotlib and Seaborn",
-                                "Machine Learning: Implemented classification and regression models",
-                                "Statistical Analysis: Applied hypothesis testing and statistical methods",
-                                "Big Data Tools: Worked with SQL databases and data preprocessing"
-                              ],
-                              cybersecurity: [
-                                "Security Fundamentals: Understanding of cybersecurity principles and best practices",
-                                "Vulnerability Assessment: Conducted systematic security testing and analysis",
-                                "Incident Response: Developed protocols for security breach management",
-                                "Ethical Hacking: Applied penetration testing within legal boundaries",
-                                "Security Tools: Proficient with industry-standard security software"
-                              ]
-                            };
-                            
-                            const items = courseTemplates[value as keyof typeof courseTemplates] || [];
-                            items.forEach(item => {
-                              setFormData(prev => ({
-                                ...prev,
-                                progressItems: [...prev.progressItems, item]
-                              }));
-                            });
-                            
-                            const courseNames = {
-                              python: "Python Programming",
-                              webdev: "Web Development", 
-                              scratch: "Scratch Programming",
-                              mobile: "Mobile Development",
-                              datascience: "Data Science",
-                              cybersecurity: "Cybersecurity"
-                            };
-                            
-                            toast({
-                              title: `${courseNames[value as keyof typeof courseNames]} Added`,
-                              description: `5 progress items generated for ${courseNames[value as keyof typeof courseNames]}`,
-                            });
-                          }}>
+                          <Label className="text-sm font-semibold text-gray-700">Select Course</Label>
+                          <Select 
+                            value={selectedProgressCourse} 
+                            onValueChange={(value) => {
+                              setSelectedProgressCourse(value)
+                              setSelectedProgressItems(new Set())
+                            }}
+                          >
                             <SelectTrigger className="w-full">
-                              <SelectValue placeholder="Select a course template to add 5 items" />
+                              <SelectValue placeholder="Select a course to view progress items" />
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="python">🐍 Python Programming</SelectItem>
@@ -1397,30 +1404,249 @@ export function UnifiedSingleReport(props: UnifiedSingleReportProps) {
                               <SelectItem value="mobile">📱 Mobile Development</SelectItem>
                               <SelectItem value="datascience">📊 Data Science</SelectItem>
                               <SelectItem value="cybersecurity">🔒 Cybersecurity</SelectItem>
+                              <SelectItem value="robotics">🤖 Robotics Engineering</SelectItem>
+                              <SelectItem value="javascript">⚡ JavaScript Essentials</SelectItem>
+                              <SelectItem value="database">🗄️ Database Design & SQL</SelectItem>
                             </SelectContent>
                           </Select>
-                          
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            onClick={() => {
-                              setFormData(prev => ({
-                                ...prev,
-                                progressItems: []
-                              }));
-                              toast({
-                                title: "Items Cleared",
-                                description: "All progress items have been removed",
-                                variant: "destructive"
-                              });
-                            }}
-                            className="w-full border-red-200 text-red-700 hover:bg-red-50"
-                          >
-                            <Trash2 className="h-4 w-4 mr-2" />
-                            Clear All Items
-                          </Button>
                         </div>
+
+                        {/* Progress Items List */}
+                        {selectedProgressCourse && (
+                          <div className="space-y-3">
+                            <Label className="text-sm font-semibold text-gray-700">
+                              Select Progress Items ({selectedProgressItems.size}/3 selected)
+                            </Label>
+                            <div className="max-h-96 overflow-y-auto border border-gray-200 rounded-lg p-3 bg-white space-y-2">
+                              {(() => {
+                                const courseTemplates: Record<string, string[]> = {
+                                  python: [
+                                    "Variables & Data Types: Successfully implemented string, integer, boolean, and float variables with proper type handling",
+                                    "Control Structures: Mastered if-else statements, elif chains, and nested conditional logic",
+                                    "Loops: Demonstrated proficiency with for loops, while loops, and loop control statements",
+                                    "Functions: Created reusable functions with parameters, return values, and scope management",
+                                    "Data Structures: Worked with lists, dictionaries, tuples, and sets effectively",
+                                    "File Handling: Implemented file reading, writing, and data persistence operations",
+                                    "Error Handling: Developed try-except blocks and error management strategies",
+                                    "Object-Oriented Programming: Created classes, objects, and implemented inheritance",
+                                    "Modules & Packages: Utilized built-in and third-party libraries effectively",
+                                    "Debugging: Developed systematic approach to identifying and fixing errors",
+                                    "Problem Solving: Applied algorithmic thinking to solve complex programming challenges",
+                                    "Code Quality: Followed PEP 8 standards and wrote clean, readable code"
+                                  ],
+                                  webdev: [
+                                    "HTML5 Fundamentals: Created semantic web pages with proper structure and accessibility",
+                                    "CSS Styling: Applied responsive design principles, flexbox, and grid layouts",
+                                    "JavaScript Basics: Implemented interactive features, DOM manipulation, and event handling",
+                                    "React Components: Built reusable UI components with props, state, and hooks",
+                                    "State Management: Managed application state using React hooks and context API",
+                                    "API Integration: Successfully connected frontend to REST APIs and handled async operations",
+                                    "Responsive Design: Created mobile-first designs that work across all devices",
+                                    "Version Control: Used Git and GitHub for project version control and collaboration",
+                                    "Build Tools: Configured and used webpack, Vite, or similar build tools",
+                                    "Testing: Wrote unit tests and integration tests for web applications",
+                                    "Performance Optimization: Implemented code splitting, lazy loading, and optimization techniques",
+                                    "Deployment: Deployed web applications to hosting platforms like Vercel or Netlify"
+                                  ],
+                                  scratch: [
+                                    "Visual Programming: Mastered block-based coding concepts and logic flow",
+                                    "Game Development: Created interactive games with sprites, animations, and game mechanics",
+                                    "Event Handling: Implemented user input, keyboard controls, and interactive controls",
+                                    "Creative Projects: Designed engaging stories, animations, and educational simulations",
+                                    "Problem Solving: Demonstrated computational thinking and algorithm design",
+                                    "Sprite Management: Created and customized multiple sprites with different behaviors",
+                                    "Sound & Music: Integrated sound effects and background music into projects",
+                                    "Variables & Lists: Used variables and lists to store and manage data",
+                                    "Broadcasting: Implemented message passing between sprites using broadcast blocks",
+                                    "Conditional Logic: Applied if-then-else blocks for decision making",
+                                    "Loops & Repetition: Used repeat and forever blocks for automation",
+                                    "Project Planning: Designed and planned complex multi-sprite projects"
+                                  ],
+                                  mobile: [
+                                    "Mobile UI/UX: Designed responsive interfaces following platform guidelines (iOS/Android)",
+                                    "Cross-Platform Dev: Built apps using React Native or Flutter for multiple platforms",
+                                    "API Integration: Connected mobile apps to cloud services and databases",
+                                    "Device Features: Utilized camera, GPS, accelerometer, and native device capabilities",
+                                    "App Store Deploy: Successfully published apps to Google Play and App Store",
+                                    "State Management: Implemented state management solutions like Redux or MobX",
+                                    "Navigation: Created intuitive navigation patterns with stack, tab, and drawer navigation",
+                                    "Data Persistence: Implemented local storage, SQLite, and cloud database integration",
+                                    "Push Notifications: Integrated push notification systems for user engagement",
+                                    "Authentication: Implemented user login, registration, and security features",
+                                    "Performance: Optimized app performance, memory usage, and battery efficiency",
+                                    "Testing: Conducted device testing and resolved platform-specific issues"
+                                  ],
+                                  datascience: [
+                                    "Data Analysis: Processed datasets using Pandas and NumPy libraries effectively",
+                                    "Data Visualization: Created insightful charts using Matplotlib, Seaborn, and Plotly",
+                                    "Machine Learning: Implemented classification and regression models with scikit-learn",
+                                    "Statistical Analysis: Applied hypothesis testing and statistical methods",
+                                    "Big Data Tools: Worked with SQL databases and data preprocessing techniques",
+                                    "Data Cleaning: Handled missing data, outliers, and data quality issues",
+                                    "Feature Engineering: Created and selected relevant features for machine learning models",
+                                    "Model Evaluation: Assessed model performance using appropriate metrics",
+                                    "Data Wrangling: Transformed and reshaped data for analysis",
+                                    "Jupyter Notebooks: Created well-documented notebooks for data analysis projects",
+                                    "Data Storytelling: Presented findings through clear visualizations and reports",
+                                    "Predictive Modeling: Built and deployed predictive models for real-world applications"
+                                  ],
+                                  cybersecurity: [
+                                    "Security Fundamentals: Understanding of cybersecurity principles and best practices",
+                                    "Vulnerability Assessment: Conducted systematic security testing and analysis",
+                                    "Incident Response: Developed protocols for security breach management",
+                                    "Ethical Hacking: Applied penetration testing within legal boundaries",
+                                    "Security Tools: Proficient with industry-standard security software and tools",
+                                    "Network Security: Implemented firewall rules, VPNs, and network monitoring",
+                                    "Cryptography: Understood encryption, hashing, and cryptographic protocols",
+                                    "Risk Assessment: Identified and evaluated security risks and threats",
+                                    "Security Policies: Developed and implemented organizational security policies",
+                                    "Forensics: Conducted digital forensics and evidence collection",
+                                    "Compliance: Understood security compliance standards (GDPR, HIPAA, etc.)",
+                                    "Security Awareness: Educated users on security best practices and threats"
+                                  ],
+                                  robotics: [
+                                    "Robot Design: Designed and built robot chassis with proper weight distribution",
+                                    "Programming Logic: Implemented control algorithms for robot movement and navigation",
+                                    "Sensors Integration: Integrated ultrasonic, infrared, and touch sensors",
+                                    "Motor Control: Programmed precise motor control for movement and manipulation",
+                                    "Obstacle Avoidance: Developed algorithms for detecting and avoiding obstacles",
+                                    "Line Following: Implemented line-following algorithms using sensor arrays",
+                                    "PID Control: Applied PID control systems for stable robot operation",
+                                    "Arduino/Raspberry Pi: Programmed microcontrollers for robot control",
+                                    "Mechanical Assembly: Assembled and maintained robot hardware components",
+                                    "Problem Solving: Troubleshot and debugged robot behavior issues",
+                                    "Competition Prep: Prepared robots for robotics competitions and challenges",
+                                    "Documentation: Documented robot design, programming, and testing processes"
+                                  ],
+                                  javascript: [
+                                    "ES6+ Features: Utilized modern JavaScript features like arrow functions, destructuring, and async/await",
+                                    "DOM Manipulation: Mastered DOM selection, manipulation, and event handling",
+                                    "Asynchronous Programming: Implemented promises, async/await, and handled asynchronous operations",
+                                    "Array Methods: Effectively used map, filter, reduce, and other array methods",
+                                    "Object-Oriented JS: Created classes, prototypes, and implemented inheritance",
+                                    "API Integration: Fetched data from REST APIs and handled JSON responses",
+                                    "Local Storage: Implemented browser storage for data persistence",
+                                    "Event Handling: Created interactive UIs with event listeners and event delegation",
+                                    "Error Handling: Implemented try-catch blocks and error management",
+                                    "Code Organization: Structured code with modules and proper separation of concerns",
+                                    "Testing: Wrote unit tests using testing frameworks like Jest",
+                                    "Performance: Optimized JavaScript code for better performance and load times"
+                                  ],
+                                  database: [
+                                    "SQL Fundamentals: Mastered SELECT, INSERT, UPDATE, DELETE, and JOIN operations",
+                                    "Database Design: Created normalized database schemas with proper relationships",
+                                    "Query Optimization: Wrote efficient queries and optimized database performance",
+                                    "Data Modeling: Designed ER diagrams and database structures",
+                                    "Stored Procedures: Created and executed stored procedures and functions",
+                                    "Database Administration: Managed user permissions, backups, and database maintenance",
+                                    "NoSQL Databases: Worked with MongoDB, Redis, or other NoSQL solutions",
+                                    "ORM Tools: Used ORM frameworks like Sequelize or TypeORM",
+                                    "Data Migration: Performed database migrations and schema updates",
+                                    "Indexing: Created and managed database indexes for performance",
+                                    "Transactions: Implemented ACID transactions and handled concurrency",
+                                    "Data Security: Implemented data encryption and access control measures"
+                                  ]
+                                };
+
+                                const items = courseTemplates[selectedProgressCourse] || [];
+                                
+                                return items.map((item, index) => {
+                                  const isSelected = selectedProgressItems.has(item);
+                                  const isDisabled = !isSelected && selectedProgressItems.size >= 3;
+                                  
+                                  return (
+                                    <div 
+                                      key={index}
+                                      className={`flex items-start gap-3 p-2 rounded-lg border transition-colors ${
+                                        isSelected 
+                                          ? 'bg-blue-50 border-blue-300' 
+                                          : isDisabled 
+                                            ? 'bg-gray-50 border-gray-200 opacity-50' 
+                                            : 'bg-white border-gray-200 hover:bg-gray-50 cursor-pointer'
+                                      }`}
+                                      onClick={() => {
+                                        if (isDisabled) return;
+                                        
+                                        const newSelected = new Set(selectedProgressItems);
+                                        if (isSelected) {
+                                          newSelected.delete(item);
+                                        } else {
+                                          newSelected.add(item);
+                                        }
+                                        setSelectedProgressItems(newSelected);
+                                        
+                                        // Update formData immediately
+                                        setFormData(prev => ({
+                                          ...prev,
+                                          progressItems: Array.from(newSelected)
+                                        }));
+                                      }}
+                                    >
+                                      <Checkbox
+                                        checked={isSelected}
+                                        disabled={isDisabled}
+                                        onCheckedChange={(checked) => {
+                                          if (isDisabled && !checked) return;
+                                          
+                                          const newSelected = new Set(selectedProgressItems);
+                                          if (checked) {
+                                            if (newSelected.size >= 3) {
+                                              toast({
+                                                title: "Maximum Limit Reached",
+                                                description: "You can only select up to 3 progress items",
+                                                variant: "destructive",
+                                              });
+                                              return;
+                                            }
+                                            newSelected.add(item);
+                                          } else {
+                                            newSelected.delete(item);
+                                          }
+                                          setSelectedProgressItems(newSelected);
+                                          
+                                          // Update formData
+                                          setFormData(prev => ({
+                                            ...prev,
+                                            progressItems: Array.from(newSelected)
+                                          }));
+                                        }}
+                                      />
+                                      <Label 
+                                        className={`text-sm flex-1 cursor-pointer ${isDisabled ? 'cursor-not-allowed' : ''}`}
+                                      >
+                                        {item}
+                                      </Label>
+                                    </div>
+                                  );
+                                });
+                              })()}
+                            </div>
+                            
+                            <div className="flex gap-2">
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                  setSelectedProgressItems(new Set())
+                                  setFormData(prev => ({
+                                    ...prev,
+                                    progressItems: []
+                                  }));
+                                  toast({
+                                    title: "Selection Cleared",
+                                    description: "All progress items have been cleared",
+                                  });
+                                }}
+                                disabled={selectedProgressItems.size === 0}
+                                className="border-red-200 text-red-700 hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                              >
+                                <Trash2 className="h-4 w-4 mr-2" />
+                                Clear Selection
+                              </Button>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </Card>
                   </div>
@@ -1448,7 +1674,6 @@ export function UnifiedSingleReport(props: UnifiedSingleReportProps) {
                           <Textarea
                             value={item}
                             onChange={(e) => updateProgressItem(index, e.target.value)}
-                            placeholder="Topic: Description of achievement or progress..."
                             rows={2}
                             className="text-sm border-blue-200 focus:border-blue-400 bg-white"
                           />
@@ -1809,12 +2034,69 @@ export function UnifiedSingleReport(props: UnifiedSingleReportProps) {
           <CardContent className="p-6">
             {showPreview ? (
               <div className="space-y-4">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-2 text-sm text-slate-600">
-                    <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                    Interactive Preview Mode
+                {/* Enhanced Preview Header with Zoom Controls */}
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4 p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
+                  <div className="flex items-center gap-2 text-sm text-slate-700">
+                    <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
+                    <span className="font-medium">Interactive Preview Mode</span>
+                    <span className="hidden sm:inline text-xs text-slate-500">({previewZoom}%)</span>
                   </div>
-                  <div className="flex items-center gap-2">
+                  
+                  {/* Zoom Controls */}
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <div className="flex items-center gap-1 bg-white rounded-lg border border-blue-200 p-1 shadow-sm">
+                      <Button
+                        onClick={() => setPreviewZoom(prev => Math.max(50, prev - 10))}
+                        size="sm"
+                        variant="ghost"
+                        className="h-8 w-8 p-0 hover:bg-blue-50"
+                        title="Zoom Out"
+                      >
+                        <ZoomOut className="h-4 w-4 text-blue-600" />
+                      </Button>
+                      <div className="px-2 py-1 text-xs font-medium text-blue-700 min-w-[3rem] text-center">
+                        {previewZoom}%
+                      </div>
+                      <Button
+                        onClick={() => setPreviewZoom(prev => Math.min(200, prev + 10))}
+                        size="sm"
+                        variant="ghost"
+                        className="h-8 w-8 p-0 hover:bg-blue-50"
+                        title="Zoom In"
+                      >
+                        <ZoomIn className="h-4 w-4 text-blue-600" />
+                      </Button>
+                    </div>
+                    
+                    <Button
+                      onClick={() => {
+                        if (previewContainerRef.current) {
+                          const containerWidth = previewContainerRef.current.clientWidth
+                          const reportWidth = 210 * 3.779527559 // Convert mm to px (1mm = 3.779527559px)
+                          const fitZoom = Math.floor((containerWidth / reportWidth) * 100)
+                          setPreviewZoom(Math.max(50, Math.min(100, fitZoom)))
+                        }
+                      }}
+                      size="sm"
+                      variant="outline"
+                      className="h-8 border-blue-300 text-blue-700 hover:bg-blue-50 text-xs"
+                      title="Fit to Width"
+                    >
+                      <Maximize2 className="h-3 w-3 mr-1" />
+                      <span className="hidden sm:inline">Fit</span>
+                    </Button>
+                    
+                    <Button
+                      onClick={() => setPreviewZoom(100)}
+                      size="sm"
+                      variant="outline"
+                      className="h-8 border-blue-300 text-blue-700 hover:bg-blue-50 text-xs"
+                      title="Reset Zoom"
+                    >
+                      <RotateCcw className="h-3 w-3 mr-1" />
+                      <span className="hidden sm:inline">Reset</span>
+                    </Button>
+                    
                     <Button
                       onClick={() => {
                         setShowPreview(false)
@@ -1822,17 +2104,43 @@ export function UnifiedSingleReport(props: UnifiedSingleReportProps) {
                       }}
                       size="sm"
                       variant="outline"
-                      className="border-purple-300 text-purple-700 hover:bg-purple-50"
+                      className="h-8 border-purple-300 text-purple-700 hover:bg-purple-50 text-xs"
                     >
                       <Printer className="h-3 w-3 mr-1" />
-                      Print & PDF
+                      <span className="hidden sm:inline">Print & PDF</span>
+                      <span className="sm:hidden">PDF</span>
                     </Button>
                   </div>
                 </div>
                 
-                <div className="border-2 border-slate-400 rounded-lg overflow-auto bg-slate-100 shadow-lg p-4" style={{ maxHeight: "90vh" }}>
-                  <div className="bg-white rounded shadow-inner overflow-visible flex justify-center">
-                    <div ref={reportRef} style={{ width: "210mm", minWidth: "210mm", maxWidth: "100%", overflow: "visible" }}>
+                {/* Enhanced Preview Container with Zoom */}
+                <div 
+                  ref={previewContainerRef}
+                  className="border-2 border-slate-300 rounded-lg bg-gradient-to-br from-slate-100 to-slate-200 shadow-xl p-2 sm:p-4 overflow-auto min-h-[300px] sm:min-h-[400px]"
+                  style={{ 
+                    maxHeight: "calc(90vh - 200px)",
+                    touchAction: "pan-x pan-y pinch-zoom",
+                    WebkitOverflowScrolling: "touch"
+                  }}
+                  onWheel={(e) => {
+                    if (e.ctrlKey || e.metaKey) {
+                      e.preventDefault()
+                      const delta = e.deltaY > 0 ? -5 : 5
+                      setPreviewZoom(prev => Math.max(50, Math.min(200, prev + delta)))
+                    }
+                  }}
+                >
+                  <div 
+                    className="bg-white rounded-lg shadow-2xl mx-auto transition-transform duration-200 ease-out"
+                    style={{ 
+                      transform: `scale(${previewZoom / 100})`,
+                      transformOrigin: "top center",
+                      width: "210mm",
+                      minWidth: "210mm",
+                      maxWidth: "100%"
+                    }}
+                  >
+                    <div ref={reportRef} style={{ overflow: "visible" }}>
                       {selectedTier === "minimal" && minimalReportData ? (
                         <div
                           style={{

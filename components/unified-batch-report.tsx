@@ -375,24 +375,26 @@ Mike Johnson,DEF Institute,Grade 9,92,88,96,Very Good,Completed,Completed most,O
         <CardContent className="p-0">
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <div className="border-b border-blue-100 px-6 pt-6">
-              <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 bg-blue-50 h-auto">
-                <TabsTrigger value="upload" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-xs sm:text-sm p-2">
-                  <Upload className="h-4 w-4 mr-1 sm:mr-2" />
+              <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 bg-blue-50 h-auto gap-1 p-1">
+                <TabsTrigger value="upload" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-xs sm:text-sm p-2 flex items-center justify-center gap-1 sm:gap-2">
+                  <Upload className="h-4 w-4 shrink-0" />
                   <span className="hidden sm:inline">Upload Data</span>
                   <span className="sm:hidden">Upload</span>
                 </TabsTrigger>
-                <TabsTrigger value="students" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-xs sm:text-sm p-2">
-                  <Users className="h-4 w-4 mr-1 sm:mr-2" />
+                <TabsTrigger value="students" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-xs sm:text-sm p-2 flex items-center justify-center gap-1 sm:gap-2">
+                  <Users className="h-4 w-4 shrink-0" />
                   <span className="hidden sm:inline">Students ({studentsData.length})</span>
                   <span className="sm:hidden">Students</span>
                 </TabsTrigger>
-                <TabsTrigger value="generate" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white">
-                  <FileSpreadsheet className="h-4 w-4 mr-2" />
-                  Generate
+                <TabsTrigger value="generate" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-xs sm:text-sm p-2 flex items-center justify-center gap-1 sm:gap-2">
+                  <FileSpreadsheet className="h-4 w-4 shrink-0" />
+                  <span className="hidden sm:inline">Generate</span>
+                  <span className="sm:hidden">Gen</span>
                 </TabsTrigger>
-                <TabsTrigger value="results" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white">
-                  <Download className="h-4 w-4 mr-2" />
-                  Results ({generatedReports.length})
+                <TabsTrigger value="results" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-xs sm:text-sm p-2 flex items-center justify-center gap-1 sm:gap-2">
+                  <Download className="h-4 w-4 shrink-0" />
+                  <span className="hidden sm:inline">Results ({generatedReports.length})</span>
+                  <span className="sm:hidden">Results</span>
                 </TabsTrigger>
               </TabsList>
             </div>

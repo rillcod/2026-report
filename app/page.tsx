@@ -327,7 +327,7 @@ export default function HomePage() {
             {/* Streamlined Tab Navigation */}
             <Card className="border-blue-100 shadow-sm">
               <CardContent className="p-3">
-                <TabsList className="grid w-full grid-cols-5 bg-blue-50 h-auto p-1">
+                <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5 bg-blue-50 h-auto p-1 gap-1">
                   {tabConfig.map((tab) => {
                     const Icon = tab.icon
                     const isActive = activeTab === tab.id
@@ -337,7 +337,7 @@ export default function HomePage() {
                         key={tab.id}
                         value={tab.id}
                         className={`
-                          flex flex-col items-center gap-2 p-3 rounded-lg transition-all duration-200 text-sm
+                          flex flex-col items-center gap-1 sm:gap-2 p-2 sm:p-3 rounded-lg transition-all duration-200 text-xs sm:text-sm
                           ${
                             isActive
                               ? `${tab.bgColor} ${tab.color} ${tab.borderColor} border-2 shadow-sm`
@@ -345,10 +345,10 @@ export default function HomePage() {
                           }
                         `}
                       >
-                        <Icon className="h-5 w-5" />
+                        <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
                         <div className="text-center">
-                          <div className="font-medium">{tab.label}</div>
-                          <div className="text-xs text-gray-500">{tab.description}</div>
+                          <div className="font-medium text-[10px] sm:text-sm">{tab.label}</div>
+                          <div className="text-[9px] sm:text-xs text-gray-500 hidden sm:block">{tab.description}</div>
                         </div>
                       </TabsTrigger>
                     )

@@ -44,9 +44,25 @@ export function replacePlaceholders(
   template: string,
   placeholders: Record<string, string | number>,
 ): string {
-  return template.replace(/\[(\w+)\]/g, (match, key) => {
-    return placeholders[key]?.toString() || match
+  let result = template
+  // Replace placeholders with spaces first (e.g., [Student Name], [Course Name])
+  // This handles multi-word placeholders
+  for (const [key, value] of Object.entries(placeholders)) {
+    // Escape special regex characters in the key
+    const escapedKey = key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    // Match [Key] where Key can contain spaces and word characters
+    const regex = new RegExp(`\\[${escapedKey}\\]`, 'gi')
+    result = result.replace(regex, value?.toString() || `[${key}]`)
+  }
+  // Then replace any remaining simple placeholders without spaces (e.g., [CourseName])
+  result = result.replace(/\[(\w+)\]/g, (match, key) => {
+    // Only replace if not already replaced and exists in placeholders
+    if (placeholders[key]) {
+      return placeholders[key]?.toString() || match
+    }
+    return match
   })
+  return result
 }
 
 // Course content and progress items

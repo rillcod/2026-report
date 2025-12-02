@@ -359,12 +359,14 @@ DATE: ${formattedDate}`
         )}
       </div>
 
-      <div className={`${printMode ? 'bg-white border-l-2' : 'bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 rounded-r-lg shadow-sm'} ${printMode ? 'p-1' : 'p-4'} ${sectionSpacing} relative z-10`} style={printMode ? { borderColor: "#1e3a8a" } : { borderColor: "#1e3a8a" }}>
-        <div className={printMode ? "mb-0.5" : "mb-3"}>
-          <h3 className={`${printMode ? 'text-xs' : 'text-base'} font-bold border-b ${printMode ? 'pb-0.5' : 'pb-1'}`} style={{ color: "#1e3a8a", borderColor: "#1e3a8a" }}>STUDENT INFORMATION</h3>
-        </div>
-        <div className={`grid grid-cols-1 md:grid-cols-2 ${printMode ? 'gap-2' : 'gap-3'} ${printMode ? 'text-xs' : 'text-sm'}`}>
-          <div className={printMode ? "space-y-0.5" : "space-y-2"}>
+      <div className={`${sectionSpacing} relative z-10`}>
+        <div className={`bg-white ${printMode ? '' : 'border border-gray-200 rounded-lg shadow-sm'} overflow-hidden`}>
+          <div className={`${printMode ? 'bg-gray-700' : 'bg-gradient-to-r from-blue-600 to-blue-700'} ${printMode ? 'px-3 py-1.5' : 'px-6 py-4'}`} style={printMode ? { backgroundColor: '#374151', color: '#ffffff' } : { color: 'white' }}>
+            <h3 className={`${printMode ? 'text-sm' : 'text-lg'} font-semibold tracking-wide`} style={printMode ? { color: '#ffffff' } : { color: 'white' }}>STUDENT INFORMATION</h3>
+          </div>
+          <div className={`${cardPadding} ${printMode ? 'text-xs' : 'text-sm'}`}>
+            <div className={`grid grid-cols-1 md:grid-cols-2 ${printMode ? 'gap-2' : 'gap-3'}`}>
+              <div className={printMode ? "space-y-0.5" : "space-y-2"}>
             <div className="flex items-start">
               <span className={`${printMode ? 'text-xs' : 'text-sm'} font-semibold ${printMode ? 'w-24' : 'w-32'} shrink-0`} style={{ color: "#1e3a8a" }}>Student Name:</span>
               <span className={`${printMode ? 'text-xs' : 'text-sm'} text-gray-900 font-medium flex-1`}>{formData.studentName || "[Full Name]"}</span>
@@ -400,6 +402,8 @@ DATE: ${formattedDate}`
             <div className="flex items-start">
               <span className={`${printMode ? 'text-xs' : 'text-sm'} font-semibold ${printMode ? 'w-24' : 'w-32'} shrink-0`} style={{ color: "#1e3a8a" }}>Duration:</span>
               <span className={`${printMode ? 'text-xs' : 'text-sm'} text-gray-900 flex-1`}>{settings.duration || "12 weeks"}</span>
+            </div>
+          </div>
             </div>
           </div>
         </div>
@@ -447,11 +451,11 @@ DATE: ${formattedDate}`
                     { name: "Practical", score: practicalScore, fill: "#10b981", grade: practicalGrade },
                     { name: "Attendance", score: attendance, fill: "#8b5cf6", grade: attendanceGrade },
                   ]}
-                  margin={{ top: 10, right: 10, left: 0, bottom: printMode ? 50 : 50 }}
+                  margin={{ top: 5, right: 5, left: 5, bottom: printMode ? 10 : 20 }}
                 >
                   <XAxis 
                     dataKey="name" 
-                    tick={{ fontSize: printMode ? 11 : 12, fill: '#64748b', fontWeight: 'bold' }}
+                    tick={{ fontSize: printMode ? 11 : 13, fill: '#64748b', fontWeight: 'bold' }}
                     axisLine={{ stroke: '#cbd5e1' }}
                     tickFormatter={(value, index) => {
                       const scores = [
@@ -462,7 +466,7 @@ DATE: ${formattedDate}`
                       const item = scores[index]
                       return item ? `${value}\n${item.score}% (${item.grade})` : value
                     }}
-                    height={printMode ? 55 : 60}
+                    height={printMode ? 20 : 30}
                   />
                   <YAxis 
                     domain={[0, 100]}
@@ -562,18 +566,125 @@ DATE: ${formattedDate}`
         </div>
       </div>
 
-      <div className={`${printMode ? 'mt-1' : 'mt-6'} relative z-10`}>
-        <div className={`text-center ${printMode ? (isHDPremium ? 'px-3 py-1' : 'px-2 py-0.5') : (isHDPremium ? 'px-6 py-3' : 'px-4 py-2')} rounded-t-lg ${printMode ? 'bg-gray-700' : (minimalView ? 'bg-gray-100 text-black' : 'bg-gradient-to-r from-amber-600 to-yellow-600 text-white')}`} style={printMode ? { backgroundColor: '#374151', color: '#ffffff' } : {}}>
-          <h3 className={`${printMode ? (isHDPremium ? 'text-xs' : 'text-xs') : (isHDPremium ? 'text-base' : 'text-sm')} font-bold`} style={printMode ? { color: '#ffffff' } : (minimalView ? { color: 'black' } : { color: 'white' })}>CERTIFICATE OF COMPLETION</h3>
-        </div>
-        <div className={`certificate-container ${printMode ? 'bg-white border border-gray-300' : 'bg-gradient-to-br from-amber-50 to-yellow-50 border-2 border-amber-500 rounded-b-lg'} ${printMode ? 'p-0.5' : (isHDPremium ? 'p-8' : 'p-6')} text-center ${isHDPremium ? 'text-base' : 'text-sm'} relative overflow-hidden`}>
+      <div className={`${sectionSpacing} relative z-10 ${printMode ? '' : 'overflow-visible'}`}>
+        <div className={`bg-white ${printMode ? '' : 'border border-gray-200 rounded-lg shadow-sm'} ${printMode ? 'overflow-hidden' : 'overflow-visible'}`}>
+          <div className={`${printMode ? 'bg-gray-700' : 'bg-gradient-to-r from-amber-600 to-yellow-600'} ${printMode ? 'px-3 py-1.5' : 'px-6 py-4'}`} style={printMode ? { backgroundColor: '#374151', color: '#ffffff' } : { color: 'white' }}>
+            <h3 className={`${printMode ? 'text-sm' : 'text-lg'} font-semibold tracking-wide text-center`} style={printMode ? { color: '#ffffff' } : { color: 'white' }}>CERTIFICATE OF COMPLETION</h3>
+          </div>
+          
+          <div className={`certificate-container ${printMode ? 'bg-white' : 'bg-gradient-to-br from-amber-50 to-yellow-50'} ${cardPadding} text-center ${isHDPremium ? 'text-base' : 'text-sm'} relative ${printMode ? 'overflow-hidden' : 'overflow-visible'} ${printMode ? '' : 'shadow-xl'} ${printMode ? '' : 'backdrop-blur-sm'}`} style={printMode ? {} : { 
+            border: '3px solid #f59e0b', 
+            borderRadius: '12px',
+            boxShadow: '0 10px 25px -5px rgba(245, 158, 11, 0.2), 0 8px 10px -6px rgba(245, 158, 11, 0.1)',
+            background: printMode ? 'white' : 'linear-gradient(135deg, #fef3c7 0%, #fde68a 50%, #fcd34d 100%)'
+          }}>
+            {/* Decorative Corner Elements - Top Left */}
+            {!printMode && (
+              <div className="absolute -top-4 -left-4 w-20 h-20 z-20" style={{ pointerEvents: 'none' }}>
+                <svg viewBox="0 0 80 80" className="w-full h-full" style={{ filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.2))' }}>
+                  <path d="M40,10 C25,10 10,25 10,40 C10,55 25,70 40,70" fill="none" stroke="#f59e0b" strokeWidth="3" strokeLinecap="round"/>
+                  <circle cx="20" cy="20" r="4" fill="#f59e0b"/>
+                  <circle cx="30" cy="15" r="3" fill="#fbbf24"/>
+                  <circle cx="15" cy="30" r="3" fill="#fbbf24"/>
+                  <path d="M25,25 Q30,20 35,25" fill="none" stroke="#f59e0b" strokeWidth="2"/>
+                  <circle cx="28" cy="22" r="2" fill="#fbbf24"/>
+                </svg>
+              </div>
+            )}
+            
+            {/* Decorative Corner Elements - Top Right */}
+            {!printMode && (
+              <div className="absolute -top-4 -right-4 w-20 h-20 z-20" style={{ pointerEvents: 'none' }}>
+                <svg viewBox="0 0 80 80" className="w-full h-full transform rotate-90" style={{ filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.2))' }}>
+                  <path d="M40,10 C25,10 10,25 10,40 C10,55 25,70 40,70" fill="none" stroke="#f59e0b" strokeWidth="3" strokeLinecap="round"/>
+                  <circle cx="20" cy="20" r="4" fill="#f59e0b"/>
+                  <circle cx="30" cy="15" r="3" fill="#fbbf24"/>
+                  <circle cx="15" cy="30" r="3" fill="#fbbf24"/>
+                  <path d="M25,25 Q30,20 35,25" fill="none" stroke="#f59e0b" strokeWidth="2"/>
+                  <circle cx="28" cy="22" r="2" fill="#fbbf24"/>
+                </svg>
+              </div>
+            )}
+            
+            {/* Decorative Corner Elements - Bottom Left */}
+            {!printMode && (
+              <div className="absolute -bottom-4 -left-4 w-20 h-20 z-20" style={{ pointerEvents: 'none' }}>
+                <svg viewBox="0 0 80 80" className="w-full h-full transform -rotate-90" style={{ filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.2))' }}>
+                  <path d="M40,10 C25,10 10,25 10,40 C10,55 25,70 40,70" fill="none" stroke="#f59e0b" strokeWidth="3" strokeLinecap="round"/>
+                  <circle cx="20" cy="20" r="4" fill="#f59e0b"/>
+                  <circle cx="30" cy="15" r="3" fill="#fbbf24"/>
+                  <circle cx="15" cy="30" r="3" fill="#fbbf24"/>
+                  <path d="M25,25 Q30,20 35,25" fill="none" stroke="#f59e0b" strokeWidth="2"/>
+                  <circle cx="28" cy="22" r="2" fill="#fbbf24"/>
+                </svg>
+              </div>
+            )}
+            
+            {/* Decorative Corner Elements - Bottom Right */}
+            {!printMode && (
+              <div className="absolute -bottom-4 -right-4 w-20 h-20 z-20" style={{ pointerEvents: 'none' }}>
+                <svg viewBox="0 0 80 80" className="w-full h-full transform rotate-180" style={{ filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.2))' }}>
+                  <path d="M40,10 C25,10 10,25 10,40 C10,55 25,70 40,70" fill="none" stroke="#f59e0b" strokeWidth="3" strokeLinecap="round"/>
+                  <circle cx="20" cy="20" r="4" fill="#f59e0b"/>
+                  <circle cx="30" cy="15" r="3" fill="#fbbf24"/>
+                  <circle cx="15" cy="30" r="3" fill="#fbbf24"/>
+                  <path d="M25,25 Q30,20 35,25" fill="none" stroke="#f59e0b" strokeWidth="2"/>
+                  <circle cx="28" cy="22" r="2" fill="#fbbf24"/>
+                </svg>
+              </div>
+            )}
+            
+            {/* Decorative Border Pattern */}
+            {!printMode && (
+              <div className="absolute inset-0 pointer-events-none" style={{
+                backgroundImage: `repeating-linear-gradient(0deg, transparent, transparent 10px, rgba(245, 158, 11, 0.1) 10px, rgba(245, 158, 11, 0.1) 12px),
+                                  repeating-linear-gradient(90deg, transparent, transparent 10px, rgba(245, 158, 11, 0.1) 10px, rgba(245, 158, 11, 0.1) 12px)`,
+                borderRadius: '8px'
+              }}></div>
+            )}
+            
+            <div className={`relative z-10 ${printMode ? 'py-1 px-1' : (isHDPremium ? 'py-6 px-8' : 'py-4 px-6')}`}>
+              <div className={`text-amber-800 font-serif ${printMode ? 'text-xs' : (isHDPremium ? 'text-xl' : 'text-lg')} ${printMode ? 'mb-1' : 'mb-6'} ${printMode ? 'leading-tight' : 'leading-relaxed'} ${printMode ? '' : 'drop-shadow-sm'} ${printMode ? '' : 'relative'}`} style={printMode ? {} : { textShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+                {!printMode && (
+                  <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 z-30" style={{ pointerEvents: 'none' }}>
+                    <svg width="60" height="30" viewBox="0 0 60 30" style={{ filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.2))' }}>
+                      <path d="M30,5 Q20,15 30,25 Q40,15 30,5" fill="#f59e0b" opacity="0.8"/>
+                      <circle cx="22" cy="12" r="3" fill="#fbbf24"/>
+                      <circle cx="38" cy="12" r="3" fill="#fbbf24"/>
+                      <circle cx="30" cy="8" r="2.5" fill="#fcd34d"/>
+                      <circle cx="30" cy="22" r="2.5" fill="#fcd34d"/>
+                      <circle cx="30" cy="15" r="2" fill="#fef3c7"/>
+                    </svg>
+                  </div>
+                )}
+                {processedCertText}
+              </div>
 
-          <div className={`relative z-10 ${printMode ? 'py-0.5 px-1' : (isHDPremium ? 'py-8 px-10' : 'py-6 px-8')}`}>
-            <div className={`text-amber-800 font-serif ${printMode ? 'text-xs' : (isHDPremium ? 'text-xl' : 'text-lg')} ${printMode ? 'mb-1' : 'mb-6'} ${printMode ? 'leading-tight' : 'leading-relaxed'}`}>
-              {processedCertText}
-            </div>
-
-            <div className={`flex justify-between items-end ${printMode ? 'mt-0.5 pt-0.5' : 'mt-8 pt-6'} border-t border-amber-300`}>
+              {/* Decorative Separator with Flower Pattern */}
+              <div className={`relative ${printMode ? 'mt-0.5 pt-0.5' : 'mt-8 pt-6'}`}>
+                {!printMode && (
+                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30" style={{ pointerEvents: 'none' }}>
+                    <div className="bg-gradient-to-br from-amber-50 to-yellow-50 px-4 py-1 rounded-full">
+                      <svg width="60" height="25" viewBox="0 0 60 25" style={{ filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.2))' }}>
+                        <path d="M30,12 Q22,6 15,12 Q22,18 30,12 Q38,18 45,12 Q38,6 30,12" fill="#f59e0b" opacity="0.9"/>
+                        <circle cx="22" cy="12" r="3" fill="#fbbf24"/>
+                        <circle cx="38" cy="12" r="3" fill="#fbbf24"/>
+                        <circle cx="30" cy="9" r="2" fill="#fcd34d"/>
+                        <circle cx="30" cy="15" r="2" fill="#fcd34d"/>
+                        <circle cx="30" cy="12" r="2.5" fill="#fef3c7"/>
+                      </svg>
+                    </div>
+                  </div>
+                )}
+                <div className={`${printMode ? 'border-t border-gray-300' : 'border-t-2 border-amber-300'} ${printMode ? '' : 'relative'}`} style={printMode ? {} : { 
+                  backgroundImage: printMode ? 'none' : 'linear-gradient(to right, transparent, rgba(245, 158, 11, 0.3), transparent)',
+                  backgroundSize: '100% 2px',
+                  backgroundPosition: 'center',
+                  backgroundRepeat: 'no-repeat'
+                }}></div>
+              </div>
+              
+              <div className={`flex justify-between items-end ${printMode ? 'mt-0.5' : 'mt-6'}`}>
               <div className={`${printMode ? 'w-28' : 'w-40'} flex flex-col items-center`}>
                 <div className={`signature-container ${printMode ? 'mb-1' : 'mb-4'}`}>
                   {settings.digitalSignature ? (
@@ -628,6 +739,7 @@ DATE: ${formattedDate}`
                 </div>
               )}
             </div>
+          </div>
           </div>
         </div>
       </div>

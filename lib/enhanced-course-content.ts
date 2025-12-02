@@ -129,7 +129,70 @@ export const enhancedCourseContent: Record<string, CourseContent> = {
           "Code organization and module structure evaluation"
         ]
       }
-    ]
+    ],
+    comments: {
+      beginner: [
+        "[firstName] has made a solid start in Python programming, showing good understanding of basic syntax and control structures. They demonstrate enthusiasm for learning and are developing foundational programming skills. With continued practice and engagement, [firstName] will build confidence in writing more complex programs.",
+        "[firstName] is progressing well in Python fundamentals, grasping key concepts like variables, data types, and conditional statements. Their willingness to ask questions and seek help shows a positive learning attitude. I encourage [firstName] to practice more coding exercises to reinforce their understanding.",
+        "[firstName] shows promise in Python programming, understanding the basics of syntax and program structure. While they sometimes need guidance with more complex logic, their determination to learn is commendable. Additional practice with loops and functions will help [firstName] advance to the next level."
+      ],
+      intermediate: [
+        "[firstName] demonstrates strong Python programming skills, effectively using functions, loops, and data structures to solve problems. They show good code organization and are beginning to think algorithmically. [firstName]'s ability to debug code and find solutions independently is impressive.",
+        "[firstName] has developed solid Python programming capabilities, creating well-structured programs with proper function design and error handling. Their understanding of data structures and algorithms is growing, and they consistently produce quality work. [firstName] is ready to explore more advanced topics like object-oriented programming.",
+        "[firstName] exhibits excellent Python programming proficiency, writing clean, efficient code that demonstrates strong problem-solving abilities. They effectively use advanced features like list comprehensions, dictionaries, and file handling. [firstName]'s code quality and logical thinking show they are ready for advanced Python concepts."
+      ],
+      advanced: [
+        "[firstName] has achieved exceptional mastery of Python programming, demonstrating expert-level skills in object-oriented design, algorithm implementation, and code optimization. They create sophisticated applications with clean architecture and best practices. [firstName]'s ability to mentor peers and contribute to complex projects makes them an outstanding Python developer.",
+        "[firstName] represents excellence in Python programming, with advanced skills spanning data structures, design patterns, and software engineering principles. Their code demonstrates professional-level quality, and they consistently tackle challenging problems with innovative solutions. [firstName] is ready for real-world software development projects.",
+        "[firstName] has distinguished themselves as an exceptional Python programmer, with expertise in advanced topics including decorators, generators, async programming, and software architecture. Their ability to design scalable solutions and optimize code performance sets them apart. [firstName] shows leadership potential and is ready for professional development opportunities."
+      ]
+    },
+    strengths: {
+      beginner: [
+        "Strong grasp of Python syntax and basic programming concepts",
+        "Good problem-solving approach when tackling coding challenges",
+        "Enthusiastic learner who actively participates in class activities",
+        "Ability to follow instructions and implement basic programs correctly",
+        "Willingness to ask questions and seek clarification when needed"
+      ],
+      intermediate: [
+        "Excellent code organization and structure in Python programs",
+        "Strong understanding of functions, loops, and data structures",
+        "Effective debugging skills and error resolution capabilities",
+        "Ability to break down complex problems into manageable steps",
+        "Good coding practices including proper naming conventions and comments"
+      ],
+      advanced: [
+        "Expert-level Python programming with advanced language features",
+        "Outstanding problem-solving and algorithmic thinking abilities",
+        "Professional code quality with best practices and design patterns",
+        "Ability to design and implement complex software solutions",
+        "Strong mentoring skills and collaborative development approach"
+      ]
+    },
+    growthAreas: {
+      beginner: [
+        "Practice more coding exercises to reinforce fundamental concepts",
+        "Work on understanding program flow and logic sequencing",
+        "Develop better error handling and debugging strategies",
+        "Improve code readability and organization",
+        "Build confidence in writing programs independently"
+      ],
+      intermediate: [
+        "Explore object-oriented programming concepts more deeply",
+        "Practice with more complex data structures and algorithms",
+        "Improve code efficiency and optimization techniques",
+        "Work on larger projects to develop software design skills",
+        "Enhance understanding of Python libraries and frameworks"
+      ],
+      advanced: [
+        "Explore advanced Python topics like async programming and metaprogramming",
+        "Work on larger-scale projects with multiple modules and packages",
+        "Deepen understanding of software architecture and design patterns",
+        "Contribute to open-source projects or collaborative development",
+        "Prepare for professional software development roles"
+      ]
+    }
   },
 
   "web-development": {
@@ -182,7 +245,70 @@ export const enhancedCourseContent: Record<string, CourseContent> = {
           "Accessibility compliance testing"
         ]
       }
-    ]
+    ],
+    comments: {
+      beginner: [
+        "[firstName] has made a promising start in web development, showing good understanding of HTML structure and CSS styling basics. They demonstrate creativity in design and are learning to create visually appealing web pages. With continued practice, [firstName] will develop stronger skills in responsive design and interactivity.",
+        "[firstName] is progressing well in web development fundamentals, grasping HTML5 semantic elements and CSS properties effectively. Their projects show attention to detail and a growing understanding of web design principles. I encourage [firstName] to practice more with JavaScript to add interactivity to their websites.",
+        "[firstName] shows enthusiasm for web development, understanding the basics of HTML and CSS. While they sometimes need guidance with layout and styling, their willingness to experiment and learn is positive. Additional practice with flexbox and grid will help [firstName] create more sophisticated layouts."
+      ],
+      intermediate: [
+        "[firstName] demonstrates strong web development skills, creating responsive websites with modern CSS techniques and JavaScript interactivity. They show good understanding of DOM manipulation and event handling. [firstName]'s ability to debug and troubleshoot web issues is impressive.",
+        "[firstName] has developed solid full-stack capabilities, building interactive web applications with frontend frameworks and backend integration. Their understanding of React components and state management is growing. [firstName] consistently produces well-structured, functional web applications.",
+        "[firstName] exhibits excellent web development proficiency, creating professional-quality websites with advanced features like API integration and responsive design. They effectively use modern frameworks and tools. [firstName]'s code organization and problem-solving abilities show they are ready for advanced web development projects."
+      ],
+      advanced: [
+        "[firstName] has achieved exceptional mastery of full-stack web development, demonstrating expert-level skills in modern frameworks, API design, and deployment. They create scalable applications with clean architecture and best practices. [firstName]'s ability to mentor peers and lead projects makes them an outstanding web developer.",
+        "[firstName] represents excellence in web development, with advanced skills spanning frontend frameworks, backend systems, and DevOps practices. Their applications demonstrate professional-level quality and innovative solutions. [firstName] is ready for senior development roles and complex project leadership.",
+        "[firstName] has distinguished themselves as an exceptional full-stack developer, with expertise in advanced topics including microservices, cloud deployment, and performance optimization. Their ability to design scalable solutions and optimize applications sets them apart. [firstName] shows leadership potential and is ready for technical leadership opportunities."
+      ]
+    },
+    strengths: {
+      beginner: [
+        "Good understanding of HTML structure and semantic elements",
+        "Creative approach to CSS styling and design",
+        "Enthusiastic about learning web technologies",
+        "Ability to follow design patterns and implement layouts",
+        "Willingness to experiment with different styling techniques"
+      ],
+      intermediate: [
+        "Strong skills in responsive design and CSS frameworks",
+        "Good understanding of JavaScript and DOM manipulation",
+        "Effective use of React or other frontend frameworks",
+        "Ability to integrate APIs and handle asynchronous operations",
+        "Good debugging skills for web applications"
+      ],
+      advanced: [
+        "Expert-level full-stack development capabilities",
+        "Outstanding skills in modern frameworks and tools",
+        "Professional code quality with best practices",
+        "Ability to design and implement scalable web applications",
+        "Strong understanding of performance optimization and security"
+      ]
+    },
+    growthAreas: {
+      beginner: [
+        "Practice more with CSS layout techniques (flexbox, grid)",
+        "Work on JavaScript fundamentals and interactivity",
+        "Develop better understanding of responsive design principles",
+        "Improve code organization and file structure",
+        "Build more interactive projects to enhance skills"
+      ],
+      intermediate: [
+        "Explore advanced JavaScript features and ES6+ syntax",
+        "Practice with state management in frontend frameworks",
+        "Work on backend development and database integration",
+        "Improve understanding of web performance optimization",
+        "Enhance skills in testing and debugging web applications"
+      ],
+      advanced: [
+        "Explore advanced topics like serverless architecture and microservices",
+        "Work on larger-scale applications with complex requirements",
+        "Deepen understanding of web security and best practices",
+        "Contribute to open-source projects or lead development teams",
+        "Prepare for senior developer or technical lead roles"
+      ]
+    }
   },
 
   "robotics-engineering": {
@@ -235,7 +361,70 @@ export const enhancedCourseContent: Record<string, CourseContent> = {
           "Design process documentation and presentation"
         ]
       }
-    ]
+    ],
+    comments: {
+      beginner: [
+        "[firstName] has made a solid start in robotics engineering, showing good understanding of mechanical design principles and basic electronics. They demonstrate enthusiasm for building and programming robots. With continued practice, [firstName] will develop stronger skills in sensor integration and autonomous control.",
+        "[firstName] is progressing well in robotics fundamentals, grasping concepts of motors, sensors, and basic programming. Their projects show creativity and a growing understanding of engineering principles. I encourage [firstName] to practice more with sensor calibration and robot navigation.",
+        "[firstName] shows promise in robotics engineering, understanding the basics of robot construction and programming. While they sometimes need guidance with complex systems, their hands-on approach and problem-solving attitude are positive. Additional practice with PID control will help [firstName] advance."
+      ],
+      intermediate: [
+        "[firstName] demonstrates strong robotics engineering skills, effectively designing and building functional robots with sensor integration. They show good understanding of control systems and programming logic. [firstName]'s ability to troubleshoot mechanical and software issues is impressive.",
+        "[firstName] has developed solid robotics capabilities, creating autonomous robots with advanced sensor fusion and navigation algorithms. Their understanding of PID control and motor management is growing. [firstName] consistently produces well-engineered robotic solutions.",
+        "[firstName] exhibits excellent robotics engineering proficiency, building sophisticated robots with advanced features like computer vision and machine learning integration. They effectively use microcontrollers and sensors. [firstName]'s engineering skills and problem-solving abilities show they are ready for advanced robotics projects."
+      ],
+      advanced: [
+        "[firstName] has achieved exceptional mastery of robotics engineering, demonstrating expert-level skills in mechanical design, control systems, and autonomous navigation. They create innovative robotic solutions with professional engineering quality. [firstName]'s ability to mentor peers and lead complex projects makes them an outstanding robotics engineer.",
+        "[firstName] represents excellence in robotics engineering, with advanced skills spanning mechanical design, embedded systems, and AI integration. Their robots demonstrate professional-level functionality and innovative solutions. [firstName] is ready for research projects and professional robotics development.",
+        "[firstName] has distinguished themselves as an exceptional robotics engineer, with expertise in advanced topics including swarm robotics, advanced control algorithms, and human-robot interaction. Their ability to design complex systems and optimize robot performance sets them apart. [firstName] shows leadership potential and is ready for engineering leadership roles."
+      ]
+    },
+    strengths: {
+      beginner: [
+        "Good understanding of mechanical design and robot construction",
+        "Enthusiastic about hands-on building and experimentation",
+        "Basic programming skills for robot control",
+        "Ability to follow engineering design processes",
+        "Willingness to learn from mistakes and iterate on designs"
+      ],
+      intermediate: [
+        "Strong skills in sensor integration and data processing",
+        "Good understanding of control systems and PID algorithms",
+        "Effective problem-solving for mechanical and software issues",
+        "Ability to design and build functional autonomous robots",
+        "Good documentation and engineering communication skills"
+      ],
+      advanced: [
+        "Expert-level robotics engineering with advanced systems",
+        "Outstanding skills in mechanical design and optimization",
+        "Professional-level programming for embedded systems",
+        "Ability to design and implement complex robotic solutions",
+        "Strong leadership in robotics projects and team collaboration"
+      ]
+    },
+    growthAreas: {
+      beginner: [
+        "Practice more with sensor calibration and data interpretation",
+        "Work on understanding control algorithms and feedback loops",
+        "Develop better mechanical design and construction techniques",
+        "Improve programming skills for robot autonomy",
+        "Build more complex robots to enhance engineering skills"
+      ],
+      intermediate: [
+        "Explore advanced control algorithms and optimization techniques",
+        "Practice with computer vision and sensor fusion",
+        "Work on larger-scale robotics projects with multiple systems",
+        "Improve understanding of robot navigation and path planning",
+        "Enhance skills in debugging and troubleshooting complex systems"
+      ],
+      advanced: [
+        "Explore advanced topics like swarm robotics and AI integration",
+        "Work on research-level projects with cutting-edge technologies",
+        "Deepen understanding of advanced control theory and optimization",
+        "Contribute to open-source robotics projects or lead engineering teams",
+        "Prepare for advanced research or professional engineering roles"
+      ]
+    }
   },
 
   scratch: {
@@ -415,6 +604,69 @@ export const enhancedCourseContent: Record<string, CourseContent> = {
         ],
       },
     ],
+    comments: {
+      beginner: [
+        "[firstName] has made an excellent start in Scratch programming, showing great creativity and enthusiasm for visual programming. They demonstrate good understanding of basic blocks and are creating fun, interactive projects. With continued practice, [firstName] will develop stronger skills in logic and program flow.",
+        "[firstName] is progressing well in Scratch, grasping key concepts like sprites, events, and basic animations. Their projects show creativity and a growing understanding of programming logic. I encourage [firstName] to experiment more with variables and lists to add complexity to their projects.",
+        "[firstName] shows promise in Scratch programming, understanding the basics of block-based coding and creating simple animations. While they sometimes need guidance with more complex logic, their creative approach and willingness to experiment are positive. Additional practice with control structures will help [firstName] advance."
+      ],
+      intermediate: [
+        "[firstName] demonstrates strong Scratch programming skills, effectively using events, variables, and control structures to create interactive games and stories. They show good understanding of program flow and logic. [firstName]'s ability to debug and improve their projects is impressive.",
+        "[firstName] has developed solid Scratch capabilities, creating complex projects with multiple sprites, custom blocks, and advanced logic. Their understanding of variables, lists, and cloning is growing. [firstName] consistently produces creative, well-structured Scratch projects.",
+        "[firstName] exhibits excellent Scratch programming proficiency, building sophisticated games and simulations with advanced features like data persistence and complex algorithms. They effectively use all Scratch features creatively. [firstName]'s programming skills and logical thinking show they are ready for text-based programming."
+      ],
+      advanced: [
+        "[firstName] has achieved exceptional mastery of Scratch programming, demonstrating expert-level skills in game design, algorithm implementation, and creative problem-solving. They create innovative projects with professional-quality code organization. [firstName]'s ability to mentor peers and teach programming concepts makes them an outstanding Scratch programmer.",
+        "[firstName] represents excellence in Scratch programming, with advanced skills spanning game development, simulation design, and computational thinking. Their projects demonstrate professional-level creativity and technical sophistication. [firstName] is ready to transition to text-based programming languages.",
+        "[firstName] has distinguished themselves as an exceptional Scratch programmer, with expertise in advanced topics including complex algorithms, data structures, and interactive system design. Their ability to create engaging educational content and teach others sets them apart. [firstName] shows leadership potential and is ready for advanced programming courses."
+      ]
+    },
+    strengths: {
+      beginner: [
+        "Great creativity and enthusiasm for visual programming",
+        "Good understanding of basic Scratch blocks and concepts",
+        "Ability to create simple animations and interactive projects",
+        "Willingness to experiment and try new features",
+        "Positive attitude toward learning programming"
+      ],
+      intermediate: [
+        "Strong skills in using events, variables, and control structures",
+        "Good understanding of program flow and logical thinking",
+        "Effective use of sprites, costumes, and backdrops",
+        "Ability to create interactive games and stories",
+        "Good debugging and problem-solving skills"
+      ],
+      advanced: [
+        "Expert-level Scratch programming with advanced features",
+        "Outstanding creativity in game and project design",
+        "Professional-level code organization and structure",
+        "Ability to create complex, multi-sprite projects",
+        "Strong teaching and mentoring abilities"
+      ]
+    },
+    growthAreas: {
+      beginner: [
+        "Practice more with control structures and loops",
+        "Work on understanding variables and data storage",
+        "Develop better program organization and structure",
+        "Experiment with more complex sprite interactions",
+        "Build confidence in creating longer, more detailed projects"
+      ],
+      intermediate: [
+        "Explore advanced Scratch features like cloning and custom blocks",
+        "Practice with lists and data structures",
+        "Work on creating more complex game mechanics",
+        "Improve understanding of algorithms and program efficiency",
+        "Enhance skills in project planning and organization"
+      ],
+      advanced: [
+        "Explore advanced algorithms and data structures in Scratch",
+        "Work on larger, more complex projects with multiple systems",
+        "Deepen understanding of computational thinking concepts",
+        "Mentor other students and share programming knowledge",
+        "Prepare for transition to text-based programming languages"
+      ]
+    }
   },
   python: {
     id: "python",
@@ -625,6 +877,69 @@ export const enhancedCourseContent: Record<string, CourseContent> = {
         ],
       },
     ],
+    comments: {
+      beginner: [
+        "[firstName] has made a solid start in Python programming, showing good understanding of basic syntax and control structures. They demonstrate enthusiasm for learning and are developing foundational programming skills. With continued practice and engagement, [firstName] will build confidence in writing more complex programs.",
+        "[firstName] is progressing well in Python fundamentals, grasping key concepts like variables, data types, and conditional statements. Their willingness to ask questions and seek help shows a positive learning attitude. I encourage [firstName] to practice more coding exercises to reinforce their understanding.",
+        "[firstName] shows promise in Python programming, understanding the basics of syntax and program structure. While they sometimes need guidance with more complex logic, their determination to learn is commendable. Additional practice with loops and functions will help [firstName] advance to the next level."
+      ],
+      intermediate: [
+        "[firstName] demonstrates strong Python programming skills, effectively using functions, loops, and data structures to solve problems. They show good code organization and are beginning to think algorithmically. [firstName]'s ability to debug code and find solutions independently is impressive.",
+        "[firstName] has developed solid Python programming capabilities, creating well-structured programs with proper function design and error handling. Their understanding of data structures and algorithms is growing, and they consistently produce quality work. [firstName] is ready to explore more advanced topics like object-oriented programming.",
+        "[firstName] exhibits excellent Python programming proficiency, writing clean, efficient code that demonstrates strong problem-solving abilities. They effectively use advanced features like list comprehensions, dictionaries, and file handling. [firstName]'s code quality and logical thinking show they are ready for advanced Python concepts."
+      ],
+      advanced: [
+        "[firstName] has achieved exceptional mastery of Python programming, demonstrating expert-level skills in object-oriented design, algorithm implementation, and code optimization. They create sophisticated applications with clean architecture and best practices. [firstName]'s ability to mentor peers and contribute to complex projects makes them an outstanding Python developer.",
+        "[firstName] represents excellence in Python programming, with advanced skills spanning data structures, design patterns, and software engineering principles. Their code demonstrates professional-level quality, and they consistently tackle challenging problems with innovative solutions. [firstName] is ready for real-world software development projects.",
+        "[firstName] has distinguished themselves as an exceptional Python programmer, with expertise in advanced topics including decorators, generators, async programming, and software architecture. Their ability to design scalable solutions and optimize code performance sets them apart. [firstName] shows leadership potential and is ready for professional development opportunities."
+      ]
+    },
+    strengths: {
+      beginner: [
+        "Strong grasp of Python syntax and basic programming concepts",
+        "Good problem-solving approach when tackling coding challenges",
+        "Enthusiastic learner who actively participates in class activities",
+        "Ability to follow instructions and implement basic programs correctly",
+        "Willingness to ask questions and seek clarification when needed"
+      ],
+      intermediate: [
+        "Excellent code organization and structure in Python programs",
+        "Strong understanding of functions, loops, and data structures",
+        "Effective debugging skills and error resolution capabilities",
+        "Ability to break down complex problems into manageable steps",
+        "Good coding practices including proper naming conventions and comments"
+      ],
+      advanced: [
+        "Expert-level Python programming with advanced language features",
+        "Outstanding problem-solving and algorithmic thinking abilities",
+        "Professional code quality with best practices and design patterns",
+        "Ability to design and implement complex software solutions",
+        "Strong mentoring skills and collaborative development approach"
+      ]
+    },
+    growthAreas: {
+      beginner: [
+        "Practice more coding exercises to reinforce fundamental concepts",
+        "Work on understanding program flow and logic sequencing",
+        "Develop better error handling and debugging strategies",
+        "Improve code readability and organization",
+        "Build confidence in writing programs independently"
+      ],
+      intermediate: [
+        "Explore object-oriented programming concepts more deeply",
+        "Practice with more complex data structures and algorithms",
+        "Improve code efficiency and optimization techniques",
+        "Work on larger projects to develop software design skills",
+        "Enhance understanding of Python libraries and frameworks"
+      ],
+      advanced: [
+        "Explore advanced Python topics like async programming and metaprogramming",
+        "Work on larger-scale projects with multiple modules and packages",
+        "Deepen understanding of software architecture and design patterns",
+        "Contribute to open-source projects or collaborative development",
+        "Prepare for professional software development roles"
+      ]
+    }
   },
   robotics: {
     id: "robotics",
@@ -835,6 +1150,69 @@ export const enhancedCourseContent: Record<string, CourseContent> = {
         ],
       },
     ],
+    comments: {
+      beginner: [
+        "[firstName] has made a solid start in robotics, showing good understanding of mechanical design principles and basic electronics. They demonstrate enthusiasm for building and programming robots. With continued practice, [firstName] will develop stronger skills in sensor integration and autonomous control.",
+        "[firstName] is progressing well in robotics fundamentals, grasping concepts of motors, sensors, and basic programming. Their projects show creativity and a growing understanding of engineering principles. I encourage [firstName] to practice more with sensor calibration and robot navigation.",
+        "[firstName] shows promise in robotics, understanding the basics of robot construction and programming. While they sometimes need guidance with complex systems, their hands-on approach and problem-solving attitude are positive. Additional practice with PID control will help [firstName] advance."
+      ],
+      intermediate: [
+        "[firstName] demonstrates strong robotics skills, effectively designing and building functional robots with sensor integration. They show good understanding of control systems and programming logic. [firstName]'s ability to troubleshoot mechanical and software issues is impressive.",
+        "[firstName] has developed solid robotics capabilities, creating autonomous robots with advanced sensor fusion and navigation algorithms. Their understanding of PID control and motor management is growing. [firstName] consistently produces well-engineered robotic solutions.",
+        "[firstName] exhibits excellent robotics proficiency, building sophisticated robots with advanced features like computer vision and machine learning integration. They effectively use microcontrollers and sensors. [firstName]'s engineering skills and problem-solving abilities show they are ready for advanced robotics projects."
+      ],
+      advanced: [
+        "[firstName] has achieved exceptional mastery of robotics, demonstrating expert-level skills in mechanical design, control systems, and autonomous navigation. They create innovative robotic solutions with professional engineering quality. [firstName]'s ability to mentor peers and lead complex projects makes them an outstanding robotics engineer.",
+        "[firstName] represents excellence in robotics, with advanced skills spanning mechanical design, embedded systems, and AI integration. Their robots demonstrate professional-level functionality and innovative solutions. [firstName] is ready for research projects and professional robotics development.",
+        "[firstName] has distinguished themselves as an exceptional robotics engineer, with expertise in advanced topics including swarm robotics, advanced control algorithms, and human-robot interaction. Their ability to design complex systems and optimize robot performance sets them apart. [firstName] shows leadership potential and is ready for engineering leadership roles."
+      ]
+    },
+    strengths: {
+      beginner: [
+        "Good understanding of mechanical design and robot construction",
+        "Enthusiastic about hands-on building and experimentation",
+        "Basic programming skills for robot control",
+        "Ability to follow engineering design processes",
+        "Willingness to learn from mistakes and iterate on designs"
+      ],
+      intermediate: [
+        "Strong skills in sensor integration and data processing",
+        "Good understanding of control systems and PID algorithms",
+        "Effective problem-solving for mechanical and software issues",
+        "Ability to design and build functional autonomous robots",
+        "Good documentation and engineering communication skills"
+      ],
+      advanced: [
+        "Expert-level robotics engineering with advanced systems",
+        "Outstanding skills in mechanical design and optimization",
+        "Professional-level programming for embedded systems",
+        "Ability to design and implement complex robotic solutions",
+        "Strong leadership in robotics projects and team collaboration"
+      ]
+    },
+    growthAreas: {
+      beginner: [
+        "Practice more with sensor calibration and data interpretation",
+        "Work on understanding control algorithms and feedback loops",
+        "Develop better mechanical design and construction techniques",
+        "Improve programming skills for robot autonomy",
+        "Build more complex robots to enhance engineering skills"
+      ],
+      intermediate: [
+        "Explore advanced control algorithms and optimization techniques",
+        "Practice with computer vision and sensor fusion",
+        "Work on larger-scale robotics projects with multiple systems",
+        "Improve understanding of robot navigation and path planning",
+        "Enhance skills in debugging and troubleshooting complex systems"
+      ],
+      advanced: [
+        "Explore advanced topics like swarm robotics and AI integration",
+        "Work on research-level projects with cutting-edge technologies",
+        "Deepen understanding of advanced control theory and optimization",
+        "Contribute to open-source robotics projects or lead engineering teams",
+        "Prepare for advanced research or professional engineering roles"
+      ]
+    }
   },
   web: {
     id: "web",
@@ -1045,6 +1423,69 @@ export const enhancedCourseContent: Record<string, CourseContent> = {
         ],
       },
     ],
+    comments: {
+      beginner: [
+        "[firstName] has made a promising start in web development, showing good understanding of HTML structure and CSS styling basics. They demonstrate creativity in design and are learning to create visually appealing web pages. With continued practice, [firstName] will develop stronger skills in responsive design and interactivity.",
+        "[firstName] is progressing well in web development fundamentals, grasping HTML5 semantic elements and CSS properties effectively. Their projects show attention to detail and a growing understanding of web design principles. I encourage [firstName] to practice more with JavaScript to add interactivity to their websites.",
+        "[firstName] shows enthusiasm for web development, understanding the basics of HTML and CSS. While they sometimes need guidance with layout and styling, their willingness to experiment and learn is positive. Additional practice with flexbox and grid will help [firstName] create more sophisticated layouts."
+      ],
+      intermediate: [
+        "[firstName] demonstrates strong web development skills, creating responsive websites with modern CSS techniques and JavaScript interactivity. They show good understanding of DOM manipulation and event handling. [firstName]'s ability to debug and troubleshoot web issues is impressive.",
+        "[firstName] has developed solid full-stack capabilities, building interactive web applications with frontend frameworks and backend integration. Their understanding of React components and state management is growing. [firstName] consistently produces well-structured, functional web applications.",
+        "[firstName] exhibits excellent web development proficiency, creating professional-quality websites with advanced features like API integration and responsive design. They effectively use modern frameworks and tools. [firstName]'s code organization and problem-solving abilities show they are ready for advanced web development projects."
+      ],
+      advanced: [
+        "[firstName] has achieved exceptional mastery of full-stack web development, demonstrating expert-level skills in modern frameworks, API design, and deployment. They create scalable applications with clean architecture and best practices. [firstName]'s ability to mentor peers and lead projects makes them an outstanding web developer.",
+        "[firstName] represents excellence in web development, with advanced skills spanning frontend frameworks, backend systems, and DevOps practices. Their applications demonstrate professional-level quality and innovative solutions. [firstName] is ready for senior development roles and complex project leadership.",
+        "[firstName] has distinguished themselves as an exceptional full-stack developer, with expertise in advanced topics including microservices, cloud deployment, and performance optimization. Their ability to design scalable solutions and optimize applications sets them apart. [firstName] shows leadership potential and is ready for technical leadership opportunities."
+      ]
+    },
+    strengths: {
+      beginner: [
+        "Good understanding of HTML structure and semantic elements",
+        "Creative approach to CSS styling and design",
+        "Enthusiastic about learning web technologies",
+        "Ability to follow design patterns and implement layouts",
+        "Willingness to experiment with different styling techniques"
+      ],
+      intermediate: [
+        "Strong skills in responsive design and CSS frameworks",
+        "Good understanding of JavaScript and DOM manipulation",
+        "Effective use of React or other frontend frameworks",
+        "Ability to integrate APIs and handle asynchronous operations",
+        "Good debugging skills for web applications"
+      ],
+      advanced: [
+        "Expert-level full-stack development capabilities",
+        "Outstanding skills in modern frameworks and tools",
+        "Professional code quality with best practices",
+        "Ability to design and implement scalable web applications",
+        "Strong understanding of performance optimization and security"
+      ]
+    },
+    growthAreas: {
+      beginner: [
+        "Practice more with CSS layout techniques (flexbox, grid)",
+        "Work on JavaScript fundamentals and interactivity",
+        "Develop better understanding of responsive design principles",
+        "Improve code organization and file structure",
+        "Build more interactive projects to enhance skills"
+      ],
+      intermediate: [
+        "Explore advanced JavaScript features and ES6+ syntax",
+        "Practice with state management in frontend frameworks",
+        "Work on backend development and database integration",
+        "Improve understanding of web performance optimization",
+        "Enhance skills in testing and debugging web applications"
+      ],
+      advanced: [
+        "Explore advanced topics like serverless architecture and microservices",
+        "Work on larger-scale applications with complex requirements",
+        "Deepen understanding of web security and best practices",
+        "Contribute to open-source projects or lead development teams",
+        "Prepare for senior developer or technical lead roles"
+      ]
+    }
   },
   design: {
     id: "design",
@@ -1223,6 +1664,69 @@ export const enhancedCourseContent: Record<string, CourseContent> = {
         ],
       },
     ],
+    comments: {
+      beginner: [
+        "[firstName] has made an excellent start in UI/UX design, showing great creativity and an eye for visual aesthetics. They demonstrate good understanding of design principles and are creating visually appealing interfaces. With continued practice, [firstName] will develop stronger skills in user-centered design and interaction patterns.",
+        "[firstName] is progressing well in design fundamentals, grasping key concepts like color theory, typography, and layout principles. Their projects show creativity and a growing understanding of design thinking. I encourage [firstName] to practice more with user research and prototyping to enhance their design process.",
+        "[firstName] shows promise in UI/UX design, understanding the basics of visual design and creating simple interfaces. While they sometimes need guidance with more complex design systems, their creative approach and willingness to iterate are positive. Additional practice with design tools will help [firstName] advance."
+      ],
+      intermediate: [
+        "[firstName] demonstrates strong design skills, effectively creating user-centered interfaces with good usability principles. They show good understanding of design systems and component libraries. [firstName]'s ability to iterate based on feedback and improve designs is impressive.",
+        "[firstName] has developed solid UI/UX capabilities, creating professional-quality designs with advanced features like responsive layouts and interactive prototypes. Their understanding of user research and design thinking is growing. [firstName] consistently produces well-thought-out, user-friendly designs.",
+        "[firstName] exhibits excellent design proficiency, building sophisticated interfaces with advanced features like design systems, micro-interactions, and accessibility considerations. They effectively use design tools and prototyping software. [firstName]'s design skills and user empathy show they are ready for advanced design projects."
+      ],
+      advanced: [
+        "[firstName] has achieved exceptional mastery of UI/UX design, demonstrating expert-level skills in user research, design systems, and product design. They create innovative solutions with professional design quality. [firstName]'s ability to mentor peers and lead design projects makes them an outstanding designer.",
+        "[firstName] represents excellence in UI/UX design, with advanced skills spanning user research, interaction design, and design leadership. Their designs demonstrate professional-level quality and innovative solutions. [firstName] is ready for senior design roles and complex product design leadership.",
+        "[firstName] has distinguished themselves as an exceptional designer, with expertise in advanced topics including design strategy, design systems architecture, and design team leadership. Their ability to create impactful user experiences and lead design initiatives sets them apart. [firstName] shows leadership potential and is ready for design leadership opportunities."
+      ]
+    },
+    strengths: {
+      beginner: [
+        "Great creativity and visual design sense",
+        "Good understanding of basic design principles",
+        "Ability to create visually appealing interfaces",
+        "Willingness to experiment with different design styles",
+        "Positive attitude toward learning design tools and techniques"
+      ],
+      intermediate: [
+        "Strong skills in user-centered design and usability",
+        "Good understanding of design systems and components",
+        "Effective use of design tools and prototyping software",
+        "Ability to create responsive and accessible designs",
+        "Good iteration and feedback incorporation skills"
+      ],
+      advanced: [
+        "Expert-level UI/UX design with advanced methodologies",
+        "Outstanding skills in user research and design thinking",
+        "Professional-level design system creation and management",
+        "Ability to design and lead complex product experiences",
+        "Strong design leadership and mentoring abilities"
+      ]
+    },
+    growthAreas: {
+      beginner: [
+        "Practice more with design tools and software",
+        "Work on understanding user research and personas",
+        "Develop better understanding of layout and composition",
+        "Improve typography and color theory knowledge",
+        "Build more complex projects to enhance design skills"
+      ],
+      intermediate: [
+        "Explore advanced prototyping and interaction design",
+        "Practice with design systems and component libraries",
+        "Work on user research and usability testing",
+        "Improve understanding of accessibility and inclusive design",
+        "Enhance skills in design presentation and communication"
+      ],
+      advanced: [
+        "Explore advanced topics like design strategy and product thinking",
+        "Work on larger-scale design projects with complex requirements",
+        "Deepen understanding of design leadership and team management",
+        "Contribute to design communities or lead design teams",
+        "Prepare for senior designer or design lead roles"
+      ]
+    }
   }
 };
 
