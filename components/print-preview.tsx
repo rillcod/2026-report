@@ -178,13 +178,14 @@ export function PrintPreview({ formData, settings, onClose, tier = "standard" }:
             }}
           >
             <div 
-              className="border-2 border-slate-400 rounded-lg bg-white shadow-xl p-4"
+              className="border-2 border-slate-400 rounded-lg bg-white shadow-xl p-4 mx-auto"
               style={{
                 transform: `scale(${zoom})`,
                 transformOrigin: "top center",
                 transition: "transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                 width: "210mm",
                 minWidth: "210mm",
+                maxWidth: "210mm",
               }}
             >
               <div 
@@ -194,6 +195,7 @@ export function PrintPreview({ formData, settings, onClose, tier = "standard" }:
                   width: "210mm",
                   minWidth: "210mm",
                   maxWidth: "210mm",
+                  boxSizing: "border-box",
                 }}
               >
                 {tier === "minimal" && minimalReportData ? (

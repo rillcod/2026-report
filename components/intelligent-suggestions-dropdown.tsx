@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
@@ -26,7 +26,6 @@ import {
   Lightbulb,
   Star,
   CheckCircle,
-  ArrowRight,
   Wand2
 } from "lucide-react"
 
@@ -47,6 +46,8 @@ interface IntelligentSuggestionsDropdownProps {
   onSelect: (suggestion: string) => void
   triggerText?: string
   maxSelections?: number
+  minSelections?: number
+  currentValue?: string // Current textarea value to parse existing selections
 }
 
 export function IntelligentSuggestionsDropdown({
@@ -56,12 +57,27 @@ export function IntelligentSuggestionsDropdown({
   performanceLevel = "B",
   onSelect,
   triggerText,
-  maxSelections = 3
+  maxSelections = 3,
+  minSelections = 1,
+  currentValue = ""
 }: IntelligentSuggestionsDropdownProps) {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedItems, setSelectedItems] = useState<string[]>([])
   const [isOpen, setIsOpen] = useState(false)
   const { toast } = useToast()
+
+  // Parse existing content to extract selected items
+  useEffect(() => {
+    if (currentValue) {
+      const lines = currentValue.split('\n').filter(line => line.trim())
+      const items = lines
+        .map(line => line.replace(/^[•\-\*]\s*/, '').trim())
+        .filter(item => item.length > 0)
+      if (items.length > 0) {
+        setSelectedItems(items.slice(0, maxSelections))
+      }
+    }
+  }, [currentValue, maxSelections])
 
   // Course-specific suggestion database - EXPANDED with much more content
   const suggestionDatabase = useMemo(() => {
@@ -263,9 +279,29 @@ export function IntelligentSuggestionsDropdown({
     }).slice(0, 25) // Increased to 25 suggestions for more content
   }, [suggestionDatabase, searchTerm, studentLevel])
 
+  const applySelections = (items: string[]) => {
+    if (items.length === 0) {
+      onSelect("")
+      return
+    }
+    const combined = items.map(item => `• ${item}`).join("\n")
+    onSelect(combined)
+  }
+
   const handleSelectItem = (item: SuggestionItem) => {
     if (selectedItems.includes(item.text)) {
-      setSelectedItems(prev => prev.filter(text => text !== item.text))
+      // Prevent deselection if it would go below minimum
+      if (selectedItems.length <= minSelections) {
+        toast({
+          title: "Minimum Selection Required",
+          description: `At least ${minSelections} item(s) must be selected`,
+          variant: "destructive"
+        })
+        return
+      }
+      const newItems = selectedItems.filter(text => text !== item.text)
+      setSelectedItems(newItems)
+      applySelections(newItems)
     } else {
       if (selectedItems.length >= maxSelections) {
         toast({
@@ -275,29 +311,10 @@ export function IntelligentSuggestionsDropdown({
         })
         return
       }
-      setSelectedItems(prev => [...prev, item.text])
+      const newItems = [...selectedItems, item.text]
+      setSelectedItems(newItems)
+      applySelections(newItems)
     }
-  }
-
-  const handleApplySelected = () => {
-    if (selectedItems.length === 0) {
-      toast({
-        title: "No Selection",
-        description: "Please select at least one item",
-        variant: "destructive"
-      })
-      return
-    }
-
-    const combined = selectedItems.join("\n• ")
-    onSelect(`• ${combined}`)
-    setSelectedItems([])
-    setIsOpen(false)
-    
-    toast({
-      title: "Applied Successfully",
-      description: `${selectedItems.length} suggestion(s) applied`,
-    })
   }
 
   const getCategoryIcon = (category: string) => {
@@ -443,26 +460,30 @@ export function IntelligentSuggestionsDropdown({
           <div className="p-3 sm:p-4 border-t bg-gray-50 flex-shrink-0">
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 sm:gap-0">
               <span className="text-xs sm:text-sm text-gray-600 text-center sm:text-left">
-                {selectedItems.length} item(s) selected
+                {selectedItems.length}/{maxSelections} selected {selectedItems.length < minSelections && `(min ${minSelections})`}
               </span>
-              <div className="flex gap-2 w-full sm:w-auto">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setSelectedItems([])}
-                  className="flex-1 sm:flex-none text-xs sm:text-sm touch-manipulation"
-                >
-                  Clear
-                </Button>
-                <Button
-                  size="sm"
-                  onClick={handleApplySelected}
-                  className="gap-1.5 sm:gap-2 flex-1 sm:flex-none text-xs sm:text-sm touch-manipulation"
-                >
-                  Apply
-                  <ArrowRight className="h-3 w-3 sm:h-4 sm:w-4" />
-                </Button>
-              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  if (selectedItems.length <= minSelections) {
+                    toast({
+                      title: "Minimum Selection Required",
+                      description: `At least ${minSelections} item(s) must remain selected`,
+                      variant: "destructive"
+                    })
+                    return
+                  }
+                  // Clear all but keep one if at minimum
+                  const keepItems = selectedItems.slice(0, minSelections)
+                  setSelectedItems(keepItems)
+                  applySelections(keepItems)
+                }}
+                disabled={selectedItems.length <= minSelections}
+                className="flex-1 sm:flex-none text-xs sm:text-sm touch-manipulation"
+              >
+                Clear All
+              </Button>
             </div>
           </div>
         )}

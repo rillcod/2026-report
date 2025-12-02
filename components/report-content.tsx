@@ -250,18 +250,22 @@ DATE: ${formattedDate}`
       className={`page ${printMode ? "bg-white" : "bg-white"} text-black ${printMode ? "print-mode" : ""} ${enhancedSpacing}`}
       style={{
         fontSize: printMode ? (isHDPremium ? "12px" : "11px") : (isHDPremium ? "14px" : "12px"),
-        width: printMode ? "210mm" : "100%",
-        maxWidth: printMode ? "210mm" : "none",
+        width: "210mm",
+        minWidth: "210mm",
+        maxWidth: "210mm",
         minHeight: printMode ? "auto" : "auto",
         maxHeight: printMode ? "297mm" : "none",
         boxSizing: "border-box",
         overflowX: "hidden",
         overflowY: "visible",
         padding: printMode ? "1mm" : (isHDPremium ? "24px" : "16px"),
-        margin: printMode ? "0 auto" : "auto",
+        margin: "0 auto",
         color: "#000000",
         pageBreakAfter: printMode ? "always" : "auto",
         pageBreakInside: printMode ? "avoid" : "auto",
+        display: "block",
+        visibility: "visible",
+        opacity: 1,
       }}
     >
 
