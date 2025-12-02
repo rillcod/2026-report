@@ -117,7 +117,7 @@
   background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
 }
 
-/* Report Content Styles - Fixed A4 dimensions for consistency */
+/* Report Content Styles - Fixed A4 dimensions for consistency - NOT RESPONSIVE */
 .page {
   width: 210mm !important;
   min-width: 210mm !important;
@@ -131,6 +131,66 @@
   font-family: "Arial", sans-serif;
 }
 
+/* Force fixed layout - override ALL responsive breakpoints */
+.page,
+.page * {
+  /* Disable all responsive breakpoints */
+  --tw-breakpoint-sm: 640px;
+  --tw-breakpoint-md: 768px;
+  --tw-breakpoint-lg: 1024px;
+  --tw-breakpoint-xl: 1280px;
+  --tw-breakpoint-2xl: 1536px;
+}
+
+/* Force fixed grid layouts - no responsive columns */
+.page .grid {
+  grid-template-columns: repeat(var(--grid-cols, 2), 1fr) !important;
+}
+
+.page .grid-cols-1 {
+  grid-template-columns: repeat(1, 1fr) !important;
+}
+
+.page .grid-cols-2 {
+  grid-template-columns: repeat(2, 1fr) !important;
+}
+
+.page .grid-cols-3 {
+  grid-template-columns: repeat(3, 1fr) !important;
+}
+
+/* Override Tailwind responsive utilities */
+.page .md\:grid-cols-2,
+.page .lg\:grid-cols-2,
+.page .sm\:grid-cols-2 {
+  grid-template-columns: repeat(2, 1fr) !important;
+}
+
+.page .md\:grid-cols-3,
+.page .lg\:grid-cols-3 {
+  grid-template-columns: repeat(3, 1fr) !important;
+}
+
+/* Force fixed flex layouts */
+.page .flex-col {
+  flex-direction: column !important;
+}
+
+.page .flex-row {
+  flex-direction: row !important;
+}
+
+.page .md\:flex-row,
+.page .lg\:flex-row,
+.page .sm\:flex-row {
+  flex-direction: row !important;
+}
+
+.page .md\:flex-col,
+.page .lg\:flex-col {
+  flex-direction: column !important;
+}
+
 .page.print-mode {
   width: 210mm !important;
   min-width: 210mm !important;
@@ -140,7 +200,7 @@
   margin: 0 auto;
 }
 
-/* Ensure consistent layout for PDF generation regardless of device */
+/* Ensure consistent layout for PDF generation regardless of device - FIXED LAYOUT */
 @media screen {
   .page {
     width: 210mm !important;
@@ -152,6 +212,109 @@
   .page * {
     box-sizing: border-box;
   }
+  
+  /* Override ALL responsive utilities - force fixed layout */
+  .page *[class*="sm:"],
+  .page *[class*="md:"],
+  .page *[class*="lg:"],
+  .page *[class*="xl:"],
+  .page *[class*="2xl:"] {
+    /* Reset responsive classes - they won't apply */
+  }
+}
+
+/* Force fixed layout at ALL screen sizes - no responsive behavior */
+.page {
+  /* Disable responsive behavior completely */
+  container-type: normal !important;
+  /* Force fixed dimensions regardless of viewport */
+  width: 210mm !important;
+  min-width: 210mm !important;
+  max-width: 210mm !important;
+}
+
+/* Prevent ALL child elements from being responsive */
+.page * {
+  /* Override any responsive width constraints */
+  min-width: auto !important;
+  max-width: 100% !important;
+}
+
+/* Force fixed grid columns - never change based on screen size */
+.page .grid {
+  display: grid !important;
+}
+
+.page .grid-cols-2 {
+  grid-template-columns: 1fr 1fr !important;
+}
+
+/* Override any media query that might affect the page */
+@media (min-width: 0px) {
+  .page {
+    width: 210mm !important;
+    min-width: 210mm !important;
+    max-width: 210mm !important;
+  }
+  
+  .page .grid-cols-1.md\:grid-cols-2,
+  .page .grid-cols-1.lg\:grid-cols-2 {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .page {
+    width: 210mm !important;
+    min-width: 210mm !important;
+    max-width: 210mm !important;
+  }
+  
+  .page .grid-cols-1 {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .page {
+    width: 210mm !important;
+    min-width: 210mm !important;
+    max-width: 210mm !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .page {
+    width: 210mm !important;
+    min-width: 210mm !important;
+    max-width: 210mm !important;
+  }
+}
+
+/* Override responsive text sizes - use fixed sizes */
+.page .text-xs,
+.page .text-sm,
+.page .text-base,
+.page .text-lg,
+.page .text-xl {
+  font-size: inherit !important;
+}
+
+/* Force fixed spacing - no responsive spacing */
+.page .space-y-1,
+.page .space-y-2,
+.page .space-y-3,
+.page .space-y-4 {
+  /* Keep original spacing values */
+}
+
+/* Force fixed padding - no responsive padding */
+.page .p-1,
+.page .p-2,
+.page .p-3,
+.page .p-4,
+.page .p-6 {
+  /* Keep original padding values */
 }
 
 /* Force consistent A4 layout for all report containers */

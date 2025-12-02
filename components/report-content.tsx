@@ -247,6 +247,7 @@ DATE: ${formattedDate}`
   return (
     <div
       ref={reportRef}
+      data-pdf-element="report"
       className={`page ${printMode ? "bg-white" : "bg-white"} text-black ${printMode ? "print-mode" : ""} ${enhancedSpacing}`}
       style={{
         fontSize: printMode ? (isHDPremium ? "12px" : "11px") : (isHDPremium ? "14px" : "12px"),
@@ -266,6 +267,10 @@ DATE: ${formattedDate}`
         display: "block",
         visibility: "visible",
         opacity: 1,
+        // Force fixed layout - prevent responsive behavior
+        position: "relative",
+        transform: "none",
+        scale: "1",
       }}
     >
 
@@ -369,7 +374,7 @@ DATE: ${formattedDate}`
             <h3 className={`${printMode ? 'text-sm' : 'text-lg'} font-semibold tracking-wide`} style={printMode ? { color: '#ffffff' } : { color: 'white' }}>STUDENT INFORMATION</h3>
           </div>
           <div className={`${cardPadding} ${printMode ? 'text-xs' : 'text-sm'}`}>
-            <div className={`grid grid-cols-1 md:grid-cols-2 ${printMode ? 'gap-2' : 'gap-3'}`}>
+            <div className={`grid grid-cols-2 ${printMode ? 'gap-2' : 'gap-3'}`} style={{ gridTemplateColumns: '1fr 1fr' }}>
               <div className={printMode ? "space-y-0.5" : "space-y-2"}>
             <div className="flex items-start">
               <span className={`${printMode ? 'text-xs' : 'text-sm'} font-semibold ${printMode ? 'w-24' : 'w-32'} shrink-0`} style={{ color: "#1e3a8a" }}>Student Name:</span>
@@ -434,7 +439,7 @@ DATE: ${formattedDate}`
         </div>
       </div>
 
-      <div className={`grid grid-cols-1 lg:grid-cols-2 ${printMode ? 'gap-3' : 'gap-6'} ${sectionSpacing} relative z-10`}>
+      <div className={`grid grid-cols-2 ${printMode ? 'gap-3' : 'gap-6'} ${sectionSpacing} relative z-10`} style={{ gridTemplateColumns: '1fr 1fr' }}>
         <div className={`bg-white ${printMode ? '' : 'border border-gray-200 rounded-lg shadow-sm'} overflow-hidden`}>
           <div className={`${printMode ? 'bg-gray-700' : 'bg-gradient-to-r from-slate-600 to-slate-700'} ${printMode ? 'px-3 py-1.5' : 'px-6 py-4'}`} style={printMode ? { backgroundColor: '#374151', color: '#ffffff' } : { color: 'white' }}>
             <h3 className={`${printMode ? 'text-sm' : 'text-lg'} font-semibold tracking-wide`} style={printMode ? { color: '#ffffff' } : { color: 'white' }}>PERFORMANCE METRICS</h3>
@@ -448,7 +453,8 @@ DATE: ${formattedDate}`
                   <h4 className="text-sm font-semibold text-slate-900 mb-3">Performance Overview</h4>
                 </div>
               )}
-              <ResponsiveContainer width="100%" height={printMode ? 150 : 200}>
+              <div style={{ width: '100%', minWidth: '100%' }}>
+                <ResponsiveContainer width="100%" height={printMode ? 150 : 200}>
                 <BarChart
                   data={[
                     { name: "Theory", score: theoryScore, fill: "#3b82f6", grade: theoryGrade },
@@ -493,6 +499,7 @@ DATE: ${formattedDate}`
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
+              </div>
             </div>
 
             <div className={`${printMode ? 'pt-2' : 'pt-4'} border-t border-gray-200`}>
