@@ -327,16 +327,90 @@
 }
 
 /* Force desktop layout for PDF generation - prevent field stacking */
+.pdf-force-desktop {
+  width: 210mm !important;
+  min-width: 210mm !important;
+  max-width: 210mm !important;
+  box-sizing: border-box !important;
+}
+
 .pdf-force-desktop * {
-  flex-direction: row !important;
+  box-sizing: border-box !important;
+}
+
+/* Force all grids to maintain their column structure */
+.pdf-force-desktop .grid,
+.pdf-force-desktop [class*="grid"] {
+  display: grid !important;
+  grid-template-columns: inherit !important;
+}
+
+.pdf-force-desktop .grid-cols-2 {
+  grid-template-columns: repeat(2, 1fr) !important;
+  display: grid !important;
+}
+
+.pdf-force-desktop .grid-cols-3 {
+  grid-template-columns: repeat(3, 1fr) !important;
+  display: grid !important;
+}
+
+.pdf-force-desktop .grid-cols-1 {
+  grid-template-columns: repeat(1, 1fr) !important;
+  display: grid !important;
+}
+
+/* Force flex containers to row direction */
+.pdf-force-desktop .flex,
+.pdf-force-desktop [class*="flex"] {
+  display: flex !important;
 }
 
 .pdf-force-desktop .flex-col {
   flex-direction: row !important;
+  display: flex !important;
 }
 
-.pdf-force-desktop .grid-cols-1 {
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
+.pdf-force-desktop .flex-row {
+  flex-direction: row !important;
+  display: flex !important;
+}
+
+/* Prevent any responsive stacking */
+.pdf-force-desktop [class*="md:flex-col"],
+.pdf-force-desktop [class*="sm:flex-col"],
+.pdf-force-desktop [class*="lg:flex-col"] {
+  flex-direction: row !important;
+}
+
+.pdf-force-desktop [class*="md:grid-cols-1"],
+.pdf-force-desktop [class*="sm:grid-cols-1"],
+.pdf-force-desktop [class*="lg:grid-cols-1"] {
+  grid-template-columns: repeat(2, 1fr) !important;
+}
+
+/* Ensure all child elements maintain their layout */
+.pdf-force-desktop > * {
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+}
+
+/* Prevent overflow issues */
+.pdf-force-desktop,
+.pdf-force-desktop * {
+  overflow: visible !important;
+  overflow-x: visible !important;
+  overflow-y: visible !important;
+}
+
+/* Force inline styles to be respected */
+.pdf-force-desktop [style*="grid-template-columns"] {
+  display: grid !important;
+}
+
+.pdf-force-desktop [style*="flex-direction"] {
+  display: flex !important;
 }
 
 @media (max-width: 768px) {
@@ -344,20 +418,39 @@
     /* Override mobile styles for PDF */
     min-width: 210mm !important;
     width: 210mm !important;
+    max-width: 210mm !important;
+    position: relative !important;
+    left: auto !important;
+    right: auto !important;
+    transform: none !important;
   }
   
-  .pdf-force-desktop * {
-    /* Prevent stacking in PDF mode */
-    flex-direction: row !important;
-    display: block !important;
+  .pdf-force-desktop .grid,
+  .pdf-force-desktop [class*="grid"] {
+    display: grid !important;
+    grid-template-columns: inherit !important;
+  }
+  
+  .pdf-force-desktop .grid-cols-2 {
+    grid-template-columns: repeat(2, 1fr) !important;
+    display: grid !important;
   }
   
   .pdf-force-desktop .flex-col {
     flex-direction: row !important;
+    display: flex !important;
   }
   
   .pdf-force-desktop .grid-cols-1 {
-    grid-template-columns: repeat(3, 1fr) !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    display: grid !important;
+  }
+  
+  /* Override all responsive utilities */
+  .pdf-force-desktop [class*="md:"],
+  .pdf-force-desktop [class*="sm:"],
+  .pdf-force-desktop [class*="lg:"] {
+    /* Force desktop layout - ignore responsive classes */
   }
 }
 

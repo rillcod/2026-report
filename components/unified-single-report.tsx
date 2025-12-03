@@ -623,11 +623,44 @@ export function UnifiedSingleReport(props: UnifiedSingleReportProps) {
   }
 
   const handleDownloadPDF = async () => {
-    if (!reportRef.current) return
+    // Find the report element - prioritize the actual .page element
+    let reportElement: HTMLElement | null = null
+    
+    // First try to find the .page element (the actual report content)
+    reportElement = document.querySelector('.page[data-pdf-element="report"]') as HTMLElement ||
+                    document.querySelector('.page') as HTMLElement ||
+                    reportRef.current?.querySelector('.page') as HTMLElement ||
+                    reportRef.current
+    
+    // Fallback: try other selectors
+    if (!reportElement) {
+      reportElement = document.querySelector('[data-pdf-element="report"]') as HTMLElement ||
+                      document.querySelector('.report-content') as HTMLElement ||
+                      reportRef.current
+    }
+    
+    if (!reportElement) {
+      toast({
+        title: "PDF Generation Failed",
+        description: "Report content not found. Please ensure the preview is visible and try again.",
+        variant: "destructive",
+      })
+      return
+    }
+    
+    // Ensure element is visible
+    if (reportElement.offsetWidth === 0 || reportElement.offsetHeight === 0) {
+      toast({
+        title: "PDF Generation Failed",
+        description: "Report content is not visible. Please ensure the preview is displayed.",
+        variant: "destructive",
+      })
+      return
+    }
 
     setIsGenerating(true)
     try {
-      const success = await generateAndDownloadPDF(reportRef.current, {
+      const success = await generateAndDownloadPDF(reportElement, {
         tier: selectedTier,
         studentName: formData.studentName || "Student",
         reportData: formData,
@@ -635,7 +668,7 @@ export function UnifiedSingleReport(props: UnifiedSingleReportProps) {
       })
 
       if (!success) {
-        throw new Error("PDF generation failed")
+        throw new Error("PDF generation returned false")
       }
 
       toast({
@@ -644,9 +677,10 @@ export function UnifiedSingleReport(props: UnifiedSingleReportProps) {
       })
     } catch (error) {
       console.error("Single report PDF download failed:", error)
+      const errorMessage = error instanceof Error ? error.message : "Unknown error"
       toast({
         title: "Download Failed",
-        description: "Failed to download PDF. Please try again.",
+        description: errorMessage.length > 80 ? `${errorMessage.substring(0, 80)}...` : errorMessage,
         variant: "destructive",
       })
     } finally {

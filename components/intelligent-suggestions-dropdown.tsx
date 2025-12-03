@@ -363,9 +363,13 @@ export function IntelligentSuggestionsDropdown({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent 
-        className="w-[calc(100vw-2rem)] sm:w-96 md:w-[28rem] p-0 max-h-[85vh] sm:max-h-[80vh] flex flex-col z-[100]" 
+        className="w-[calc(100vw-2rem)] sm:w-96 md:w-[28rem] p-0 flex flex-col z-[100]" 
         align="start"
         sideOffset={4}
+        style={{
+          maxHeight: '85vh',
+          height: 'auto',
+        }}
         onInteractOutside={(e) => {
           // Allow closing by clicking outside
           setIsOpen(false)
@@ -399,7 +403,12 @@ export function IntelligentSuggestionsDropdown({
           </div>
         </div>
         
-        <ScrollArea className="flex-1 overflow-y-auto max-h-[60vh] sm:max-h-[50vh]">
+        <div className="flex-1 overflow-y-auto" style={{ 
+          maxHeight: 'calc(85vh - 200px)',
+          WebkitOverflowScrolling: 'touch',
+          overscrollBehavior: 'contain',
+          scrollBehavior: 'smooth'
+        }}>
           <div className="p-2 sm:p-3">
             {filteredSuggestions.length === 0 ? (
               <div className="text-center py-8 text-gray-500">
@@ -408,13 +417,22 @@ export function IntelligentSuggestionsDropdown({
                 <p className="text-xs mt-1">Try a different search term</p>
               </div>
             ) : (
-              filteredSuggestions.map((item) => (
+              filteredSuggestions.map((item, index) => (
                 <Card
                   key={item.id || item.text}
-                  className={`mb-2 cursor-pointer transition-all hover:bg-gray-50 active:bg-gray-100 touch-manipulation ${
+                  className={`mb-2 cursor-pointer transition-all hover:bg-gray-50 active:bg-gray-100 touch-manipulation scroll-mt-2 ${
                     selectedItems.includes(item.text) ? "bg-blue-50 border-blue-200 ring-2 ring-blue-300" : ""
                   }`}
                   onClick={() => handleSelectItem(item)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      handleSelectItem(item)
+                    }
+                  }}
+                  tabIndex={0}
+                  role="button"
+                  aria-label={`Select: ${item.text.substring(0, 50)}...`}
                 >
                   <CardContent className="p-2.5 sm:p-3">
                     <div className="flex items-start gap-2 sm:gap-3">
@@ -468,39 +486,49 @@ export function IntelligentSuggestionsDropdown({
               ))
             )}
           </div>
-        </ScrollArea>
+        </div>
         
-        {selectedItems.length > 0 && (
-          <div className="p-3 sm:p-4 border-t bg-gray-50 flex-shrink-0">
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 sm:gap-0">
-              <span className="text-xs sm:text-sm text-gray-600 text-center sm:text-left">
-                {selectedItems.length}/{maxSelections} selected {selectedItems.length < minSelections && `(min ${minSelections})`}
-              </span>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  if (selectedItems.length <= minSelections) {
-                    toast({
-                      title: "Minimum Selection Required",
-                      description: `At least ${minSelections} item(s) must remain selected`,
-                      variant: "destructive"
-                    })
-                    return
-                  }
-                  // Clear all but keep one if at minimum
-                  const keepItems = selectedItems.slice(0, minSelections)
-                  setSelectedItems(keepItems)
-                  applySelections(keepItems)
-                }}
-                disabled={selectedItems.length <= minSelections}
-                className="flex-1 sm:flex-none text-xs sm:text-sm touch-manipulation"
-              >
-                Clear All
-              </Button>
-            </div>
+        <div className="p-3 sm:p-4 border-t bg-gray-50 flex-shrink-0">
+          <div className="flex flex-col gap-2">
+            {selectedItems.length > 0 && (
+              <div className="flex items-center justify-between">
+                <span className="text-xs sm:text-sm text-gray-600">
+                  {selectedItems.length}/{maxSelections} selected {selectedItems.length < minSelections && `(min ${minSelections})`}
+                </span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    if (selectedItems.length <= minSelections) {
+                      toast({
+                        title: "Minimum Selection Required",
+                        description: `At least ${minSelections} item(s) must remain selected`,
+                        variant: "destructive"
+                      })
+                      return
+                    }
+                    // Clear all but keep one if at minimum
+                    const keepItems = selectedItems.slice(0, minSelections)
+                    setSelectedItems(keepItems)
+                    applySelections(keepItems)
+                  }}
+                  disabled={selectedItems.length <= minSelections}
+                  className="text-xs sm:text-sm touch-manipulation h-7 px-2"
+                >
+                  Clear
+                </Button>
+              </div>
+            )}
+            <Button
+              variant="default"
+              size="sm"
+              onClick={() => setIsOpen(false)}
+              className="w-full text-xs sm:text-sm touch-manipulation h-8 font-medium"
+            >
+              Done / Close
+            </Button>
           </div>
-        )}
+        </div>
       </DropdownMenuContent>
     </DropdownMenu>
   )

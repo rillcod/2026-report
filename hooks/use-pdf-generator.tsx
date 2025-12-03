@@ -38,6 +38,11 @@ export function usePDFGenerator() {
         // Detect mobile once at the start
         const isMobile = window.innerWidth < 768
         
+        // Validate element exists and is in DOM
+        if (!element || !element.isConnected) {
+          throw new Error("Element is not connected to the DOM. Please ensure the report is visible before generating PDF.")
+        }
+        
         // Add data attribute for onclone identification
         if (!element.getAttribute('data-pdf-element')) {
           element.setAttribute('data-pdf-element', 'report')
@@ -45,6 +50,9 @@ export function usePDFGenerator() {
         
         // Mobile compatibility: Scroll element into view and ensure visibility
         element.scrollIntoView({ behavior: 'instant', block: 'start', inline: 'nearest' })
+        
+        // Wait for element to be in view
+        await new Promise(resolve => setTimeout(resolve, 100))
         
         // Store original styles for restoration
         originalStyles = {
@@ -80,14 +88,47 @@ export function usePDFGenerator() {
         element.style.maxWidth = "210mm"
         
         // Force desktop layout - prevent mobile stacking
+        // Apply comprehensive layout fixes to all elements
         const allChildren = element.querySelectorAll('*')
         allChildren.forEach((child: any) => {
           if (child.style) {
-            // Force desktop layout (no stacking) on mobile
-            if (isMobile) {
-              child.style.setProperty('display', 'block', 'important')
-              child.style.setProperty('flex-direction', 'row', 'important')
+            // Get computed styles to check current layout
+            const computedStyle = window.getComputedStyle(child)
+            const display = computedStyle.display
+            
+            // Force grid layouts to stay as grid
+            if (display === 'grid' || child.classList.contains('grid')) {
+              child.style.setProperty('display', 'grid', 'important')
+              // Preserve grid-template-columns if set inline
+              if (child.style.gridTemplateColumns) {
+                child.style.setProperty('grid-template-columns', child.style.gridTemplateColumns, 'important')
+              } else if (child.classList.contains('grid-cols-2')) {
+                child.style.setProperty('grid-template-columns', '1fr 1fr', 'important')
+              } else if (child.classList.contains('grid-cols-3')) {
+                child.style.setProperty('grid-template-columns', 'repeat(3, 1fr)', 'important')
+              }
             }
+            
+            // Force flex containers to row direction
+            if (display === 'flex' || child.classList.contains('flex')) {
+              child.style.setProperty('display', 'flex', 'important')
+              if (child.classList.contains('flex-col')) {
+                child.style.setProperty('flex-direction', 'row', 'important')
+              } else {
+                child.style.setProperty('flex-direction', 'row', 'important')
+              }
+            }
+            
+            // Ensure elements don't collapse
+            if (isMobile) {
+              // Don't force block on grid/flex elements
+              if (display !== 'grid' && display !== 'flex' && !child.classList.contains('grid') && !child.classList.contains('flex')) {
+                // Only apply to non-layout elements
+              }
+            }
+            
+            // Ensure box-sizing is correct
+            child.style.setProperty('box-sizing', 'border-box', 'important')
           }
         })
         
@@ -107,37 +148,110 @@ export function usePDFGenerator() {
         // Step 1: Capture element as canvas (25% progress)
         setGenerationProgress(25)
         
+        // Validate element dimensions before capture
+        const elementWidth = element.scrollWidth || element.offsetWidth || 794 // 210mm in px
+        const elementHeight = element.scrollHeight || element.offsetHeight || 1123 // 297mm in px
+        
+        if (elementWidth === 0 || elementHeight === 0) {
+          throw new Error(`Invalid element dimensions: ${elementWidth}x${elementHeight}. Element may not be visible.`)
+        }
+        
         // Mobile-optimized html2canvas options
-        const canvas = await html2canvas(element, {
-          scale: isMobile ? (options.tier === "hd" ? 2 : 1.5) : (options.tier === "hd" ? 3 : 2),
+        const scale = isMobile ? (options.tier === "hd" ? 2 : 1.5) : (options.tier === "hd" ? 3 : 2)
+        
+        // Simplified html2canvas config for better compatibility
+        const canvasOptions: any = {
+          scale: scale,
           logging: false,
           useCORS: true,
-          allowTaint: true,
+          allowTaint: false,
           backgroundColor: "#ffffff",
-          width: element.scrollWidth || element.offsetWidth,
-          height: element.scrollHeight || element.offsetHeight,
-          windowWidth: isMobile ? 210 * 3.779527559 : window.innerWidth, // Force desktop width
-          windowHeight: window.innerHeight,
-          x: 0,
-          y: 0,
-          scrollX: 0,
-          scrollY: 0,
-          removeContainer: false,
-          imageTimeout: isMobile ? 15000 : 5000, // Longer timeout on mobile
-          onclone: (clonedDoc) => {
+          width: elementWidth,
+          height: elementHeight,
+          imageTimeout: isMobile ? 15000 : 10000,
+          foreignObjectRendering: false,
+        }
+        
+        // Only add window dimensions if they're valid
+        if (window.innerWidth > 0 && window.innerHeight > 0) {
+          canvasOptions.windowWidth = isMobile ? 210 * 3.779527559 : Math.max(window.innerWidth, 794)
+          canvasOptions.windowHeight = Math.max(window.innerHeight, 1123)
+        }
+        
+        // Add onclone callback
+        canvasOptions.onclone = (clonedDoc: Document) => {
+          try {
             // Ensure cloned element is visible
             const clonedElement = clonedDoc.querySelector(`[data-pdf-element="${element.getAttribute('data-pdf-element') || 'report'}"]`) || 
                                  clonedDoc.body.querySelector('.page') ||
                                  clonedDoc.body.firstElementChild
             if (clonedElement) {
-              (clonedElement as HTMLElement).style.visibility = 'visible'
-              (clonedElement as HTMLElement).style.opacity = '1'
-              (clonedElement as HTMLElement).style.width = '210mm'
-              (clonedElement as HTMLElement).style.minWidth = '210mm'
-              (clonedElement as HTMLElement).style.maxWidth = '210mm'
+              const clonedEl = clonedElement as HTMLElement
+              clonedEl.style.visibility = 'visible'
+              clonedEl.style.opacity = '1'
+              clonedEl.style.width = '210mm'
+              clonedEl.style.minWidth = '210mm'
+              clonedEl.style.maxWidth = '210mm'
+              clonedEl.style.display = 'block'
+              clonedEl.style.boxSizing = 'border-box'
+              
+              // Apply pdf-force-desktop class to cloned element
+              clonedEl.classList.add('pdf-force-desktop')
+              
+              // Fix all grid and flex layouts in cloned document
+              const clonedChildren = clonedEl.querySelectorAll('*')
+              clonedChildren.forEach((child: any) => {
+                if (child.style) {
+                  // Use classList to determine layout type (more reliable than computed styles in clone)
+                  const hasGrid = child.classList.contains('grid')
+                  const hasFlex = child.classList.contains('flex')
+                  
+                  // Force grid layouts
+                  if (hasGrid || child.style.display === 'grid') {
+                    child.style.setProperty('display', 'grid', 'important')
+                    // Preserve inline grid-template-columns if set
+                    if (child.style.gridTemplateColumns) {
+                      child.style.setProperty('grid-template-columns', child.style.gridTemplateColumns, 'important')
+                    } else if (child.classList.contains('grid-cols-2')) {
+                      child.style.setProperty('grid-template-columns', '1fr 1fr', 'important')
+                    } else if (child.classList.contains('grid-cols-3')) {
+                      child.style.setProperty('grid-template-columns', 'repeat(3, 1fr)', 'important')
+                    } else if (child.classList.contains('grid-cols-1')) {
+                      // Convert single column to 2 columns for better space usage
+                      child.style.setProperty('grid-template-columns', '1fr 1fr', 'important')
+                    }
+                  }
+                  
+                  // Force flex to row
+                  if (hasFlex || child.style.display === 'flex') {
+                    child.style.setProperty('display', 'flex', 'important')
+                    if (child.classList.contains('flex-col')) {
+                      child.style.setProperty('flex-direction', 'row', 'important')
+                    } else {
+                      child.style.setProperty('flex-direction', 'row', 'important')
+                    }
+                  }
+                  
+                  child.style.setProperty('box-sizing', 'border-box', 'important')
+                  child.style.setProperty('overflow', 'visible', 'important')
+                  child.style.setProperty('overflow-x', 'visible', 'important')
+                  child.style.setProperty('overflow-y', 'visible', 'important')
+                }
+              })
             }
+          } catch (cloneError) {
+            console.warn("onclone error (non-critical):", cloneError)
           }
+        }
+        
+        const canvas = await html2canvas(element, canvasOptions).catch((canvasError) => {
+          console.error("html2canvas error:", canvasError)
+          throw new Error(`Canvas capture failed: ${canvasError instanceof Error ? canvasError.message : 'Unknown error'}`)
         })
+        
+        if (!canvas || canvas.width === 0 || canvas.height === 0) {
+          throw new Error(`Invalid canvas dimensions: ${canvas?.width || 0}x${canvas?.height || 0}`)
+        }
 
         // Step 2: Convert to image data (50% progress)
         setGenerationProgress(50)
@@ -251,9 +365,10 @@ export function usePDFGenerator() {
         return true
       } catch (error) {
         console.error("PDF generation failed:", error)
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
         toast({
           title: "PDF Generation Failed",
-          description: "An error occurred while generating the PDF. Please try again.",
+          description: errorMessage.length > 100 ? `${errorMessage.substring(0, 100)}...` : errorMessage,
           variant: "destructive",
         })
         return false
