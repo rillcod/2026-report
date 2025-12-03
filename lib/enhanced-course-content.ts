@@ -1733,3 +1733,23 @@ export const enhancedCourseContent: Record<string, CourseContent> = {
 export const getEnhancedCourseContent = (courseId: string): EnhancedCourse | undefined => {
   return enhancedCourseContent[courseId];
 };
+
+export function generateAdvancedAIContent(subject: string, data: any): string {
+  const course = getEnhancedCourseContent(subject);
+  if (!course) {
+    return `Course-specific content for ${subject}. ${data?.studentName || 'The student'} has shown progress in this subject.`;
+  }
+  
+  const studentName = data?.studentName || 'The student';
+  const level = data?.level || 'intermediate';
+  const scores = data?.scores || { theory: 0, practical: 0, attendance: 0 };
+  
+  // Get appropriate comments based on level
+  const comments = course.comments?.[level as keyof typeof course.comments] || [];
+  if (comments.length > 0) {
+    const comment = comments[Math.floor(Math.random() * comments.length)];
+    return comment.replace(/\[firstName\]/g, studentName);
+  }
+  
+  return `${studentName} has made progress in ${course.name}. The course covers ${course.description}.`;
+}

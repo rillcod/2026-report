@@ -6,7 +6,7 @@ import { calculateGrade, replacePlaceholders } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { getEnhancedCourseContent } from "@/lib/enhanced-course-content"
 import ProgressItemList from "./progress-item-list"
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell } from "recharts"
+import { PerformanceChart } from "@/components/performance-chart"
 
 interface ReportContentProps {
   formData: any
@@ -439,66 +439,41 @@ DATE: ${formattedDate}`
         </div>
       </div>
 
-      <div className={`grid grid-cols-2 ${printMode ? 'gap-3' : 'gap-6'} ${sectionSpacing} relative z-10`} style={{ gridTemplateColumns: '1fr 1fr' }}>
-        <div className={`bg-white ${printMode ? '' : 'border border-gray-200 rounded-lg shadow-sm'} overflow-hidden`}>
+      <div className={`grid grid-cols-2 ${printMode ? 'gap-3' : 'gap-6'} ${sectionSpacing} relative z-10`} style={{ gridTemplateColumns: '1fr 1fr', overflow: 'visible' }}>
+        <div className={`bg-white ${printMode ? '' : 'border border-gray-200 rounded-lg shadow-sm'}`} style={{ overflow: 'visible' }}>
           <div className={`${printMode ? 'bg-gray-700' : 'bg-gradient-to-r from-slate-600 to-slate-700'} ${printMode ? 'px-3 py-1.5' : 'px-6 py-4'}`} style={printMode ? { backgroundColor: '#374151', color: '#ffffff' } : { color: 'white' }}>
             <h3 className={`${printMode ? 'text-sm' : 'text-lg'} font-semibold tracking-wide`} style={printMode ? { color: '#ffffff' } : { color: 'white' }}>PERFORMANCE METRICS</h3>
           </div>
           
-          <div className={`${cardPadding} ${printMode ? 'space-y-1' : 'space-y-4'}`}>
+          <div className={`${cardPadding} ${printMode ? 'space-y-1' : 'space-y-4'}`} style={{ overflow: 'visible' }}>
             {/* Performance Bar Chart */}
-            <div className={`bg-slate-50 ${printMode ? 'border-0' : 'border border-slate-200 rounded-lg'} ${printMode ? 'p-1' : 'p-4'}`}>
+            <div className={`bg-slate-50 ${printMode ? 'border-0' : 'border border-slate-200 rounded-lg'} ${printMode ? 'p-1' : 'p-4'}`} style={{ minHeight: printMode ? '190px' : '250px', position: 'relative', overflow: 'visible', width: '100%' }}>
               {!printMode && (
                 <div className="mb-4">
                   <h4 className="text-sm font-semibold text-slate-900 mb-3">Performance Overview</h4>
                 </div>
               )}
-              <div style={{ width: '100%', minWidth: '100%' }}>
-                <ResponsiveContainer width="100%" height={printMode ? 150 : 200}>
-                <BarChart
-                  data={[
-                    { name: "Theory", score: theoryScore, fill: "#3b82f6", grade: theoryGrade },
-                    { name: "Practical", score: practicalScore, fill: "#10b981", grade: practicalGrade },
-                    { name: "Attendance", score: attendance, fill: "#8b5cf6", grade: attendanceGrade },
-                  ]}
-                  margin={{ top: 5, right: 5, left: 5, bottom: printMode ? 10 : 20 }}
-                >
-                  <XAxis 
-                    dataKey="name" 
-                    tick={{ fontSize: printMode ? 11 : 13, fill: '#64748b', fontWeight: 'bold' }}
-                    axisLine={{ stroke: '#cbd5e1' }}
-                    tickFormatter={(value, index) => {
-                      const scores = [
-                        { name: "Theory", score: theoryScore, grade: theoryGrade },
-                        { name: "Practical", score: practicalScore, grade: practicalGrade },
-                        { name: "Attendance", score: attendance, grade: attendanceGrade },
-                      ]
-                      const item = scores[index]
-                      return item ? `${value}\n${item.score}% (${item.grade})` : value
-                    }}
-                    height={printMode ? 20 : 30}
-                  />
-                  <YAxis 
-                    domain={[0, 100]}
-                    tick={{ fontSize: printMode ? 10 : 12, fill: '#64748b' }}
-                    axisLine={{ stroke: '#cbd5e1' }}
-                    width={printMode ? 30 : 40}
-                  />
-                  <Bar 
-                    dataKey="score" 
-                    radius={[8, 8, 0, 0]}
-                    label={{ position: 'top', fontSize: printMode ? 10 : 12, fill: '#475569', fontWeight: 'bold' }}
-                  >
-                    {[
-                      { name: "Theory", score: theoryScore, fill: "#3b82f6" },
-                      { name: "Practical", score: practicalScore, fill: "#10b981" },
-                      { name: "Attendance", score: attendance, fill: "#8b5cf6" },
-                    ].map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.fill} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
+              <div 
+                id="performance-chart-container"
+                style={{ 
+                  width: '100%', 
+                  height: printMode ? 170 : 220, 
+                  position: 'relative', 
+                  display: 'block', 
+                  visibility: 'visible', 
+                  overflow: 'visible', 
+                  minHeight: printMode ? 170 : 220,
+                  zIndex: 10
+                }}
+              >
+                <PerformanceChart
+                  theoryScore={theoryScore || 0}
+                  practicalScore={practicalScore || 0}
+                  attendance={attendance || 0}
+                  type="bar"
+                  className="w-full h-full"
+                  printMode={printMode}
+                />
               </div>
             </div>
 
@@ -695,7 +670,17 @@ DATE: ${formattedDate}`
                 }}></div>
               </div>
               
-              <div className={`flex justify-between items-end ${printMode ? 'mt-0.5' : 'mt-6'}`}>
+              <div 
+                className={`flex justify-between items-end ${printMode ? 'mt-0.5' : 'mt-6'}`}
+                data-certificate-layout="true"
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'flex-end',
+                  flexWrap: 'nowrap'
+                }}
+              >
               <div className={`${printMode ? 'w-28' : 'w-40'} flex flex-col items-center`}>
                 <div className={`signature-container ${printMode ? 'mb-1' : 'mb-4'}`}>
                   {settings.digitalSignature ? (
@@ -726,7 +711,14 @@ DATE: ${formattedDate}`
               </div>
 
               {formData.showPaymentDetails && (
-                <div className={`text-center flex-1 ${printMode ? 'mx-1' : 'mx-6'}`}>
+                <div 
+                  className={`text-center flex-1 ${printMode ? 'mx-1' : 'mx-6'}`}
+                  data-payment-section="true"
+                  style={{ 
+                    marginLeft: printMode ? '12px' : '24px',
+                    marginRight: printMode ? '12px' : '24px'
+                  }}
+                >
                   <div className={`bg-white bg-opacity-80 ${printMode ? 'p-0.5' : 'p-3'} rounded border border-amber-400`}>
                     <div className={`font-bold ${printMode ? 'text-[10px]' : 'text-xs'} text-amber-800 ${printMode ? 'mb-0.5' : 'mb-1'}`}>
                       NEXT TERM FEE PAYMENT

@@ -1,6 +1,6 @@
 "use client"
 import { Badge } from "@/components/ui/badge"
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts"
+import { PerformanceChart } from "@/components/performance-chart"
 
 interface ReportData {
   studentName: string
@@ -54,16 +54,7 @@ export function UnifiedReportGenerator({ reportData, settings, tier }: UnifiedRe
     }
   }
 
-  const chartData = [
-    { name: "Theory", score: reportData.theoryScore, fill: "#3b82f6" },
-    { name: "Practical", score: reportData.practicalScore, fill: "#10b981" },
-    { name: "Attendance", score: reportData.attendance, fill: "#f59e0b" },
-  ]
 
-  const pieData = [
-    { name: "Completed", value: reportData.theoryScore, fill: "#10b981" },
-    { name: "Remaining", value: 100 - reportData.theoryScore, fill: "#e5e7eb" },
-  ]
 
   const overallScore = Math.round((reportData.theoryScore + reportData.practicalScore + reportData.attendance) / 3)
   const overallGrade = calculateGrade(overallScore)
@@ -187,15 +178,12 @@ export function UnifiedReportGenerator({ reportData, settings, tier }: UnifiedRe
         {/* Performance Chart */}
         <div className="bg-gray-50 p-3 rounded border">
           <h3 className="font-bold text-xs mb-2 text-center">Performance Overview</h3>
-          <div className="h-24">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={chartData}>
-                <XAxis dataKey="name" tick={{ fontSize: 8 }} />
-                <YAxis tick={{ fontSize: 8 }} />
-                <Bar dataKey="score" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+          <PerformanceChart
+            theoryScore={reportData.theoryScore}
+            practicalScore={reportData.practicalScore}
+            attendance={reportData.attendance}
+            type="bar"
+          />
         </div>
 
         {/* Evaluation Section */}

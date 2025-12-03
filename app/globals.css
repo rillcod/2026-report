@@ -2,6 +2,93 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Recharts visibility fix - CRITICAL */
+.recharts-wrapper,
+.recharts-surface,
+.recharts-wrapper svg,
+.recharts-surface svg {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  overflow: visible !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.recharts-responsive-container {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  position: relative !important;
+  visibility: visible !important;
+  overflow: visible !important;
+}
+
+.recharts-bar,
+.recharts-bar-rectangle,
+.recharts-bar-rectangle rect,
+.recharts-bar-rectangle > rect {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  fill: inherit !important;
+  stroke: none !important;
+}
+
+/* Force chart visibility in page */
+.page .recharts-wrapper,
+.page .recharts-surface,
+.page .recharts-wrapper svg,
+.page .recharts-surface svg {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  overflow: visible !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.page .recharts-responsive-container {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  position: relative !important;
+  visibility: visible !important;
+  overflow: visible !important;
+}
+
+.page .recharts-bar,
+.page .recharts-bar-rectangle,
+.page .recharts-bar-rectangle rect,
+.page .recharts-bar-rectangle > rect {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  fill: inherit !important;
+  stroke: none !important;
+}
+
+/* Ensure chart container doesn't hide content */
+.bg-slate-50 .recharts-wrapper,
+.bg-slate-50 .recharts-responsive-container,
+#performance-chart-container .recharts-wrapper,
+#performance-chart-container .recharts-responsive-container {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Force chart bars to be visible */
+#performance-chart-container .recharts-bar-rectangle,
+#performance-chart-container .recharts-bar-rectangle rect {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  fill: inherit !important;
+}
+
 @layer base {
   :root {
     /* Base surface & typography (matches shadcn defaults) */
@@ -368,6 +455,20 @@
 
 .pdf-force-desktop .flex-col {
   flex-direction: row !important;
+  display: flex !important;
+}
+
+/* Certificate section - preserve layout */
+.pdf-force-desktop .certificate-container .flex.justify-between {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: space-between !important;
+  align-items: flex-end !important;
+  flex-wrap: nowrap !important;
+}
+
+.pdf-force-desktop .certificate-container .flex-col {
+  flex-direction: column !important;
   display: flex !important;
 }
 

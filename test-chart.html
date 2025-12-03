@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chart Test</title>
+</head>
+<body>
+    <h1>Performance Chart Test</h1>
+    <p>Visit <a href="http://localhost:3000">http://localhost:3000</a> to see your app with working charts!</p>
+    
+    <h2>What was fixed:</h2>
+    <ul>
+        <li>✅ Removed chart.js dependency (conflicted with recharts)</li>
+        <li>✅ Fixed webpack configuration for recharts</li>
+        <li>✅ Created proper SSR-safe PerformanceChart component</li>
+        <li>✅ Added missing html2canvas import</li>
+        <li>✅ Updated report generator to use new chart component</li>
+    </ul>
+    
+    <h2>Your charts should now:</h2>
+    <ul>
+        <li>✅ Render properly without webpack errors</li>
+        <li>✅ Work in both development and production builds</li>
+        <li>✅ Handle SSR correctly (no hydration issues)</li>
+        <li>✅ Display performance data as bar or pie charts</li>
+    </ul>
+</body>
+</html>

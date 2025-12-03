@@ -48,48 +48,83 @@ export function usePDFGenerator() {
           element.setAttribute('data-pdf-element', 'report')
         }
         
+        // Find the actual .page element if element is a wrapper
+        let targetElement = element
+        const pageElement = element.querySelector('.page[data-pdf-element="report"]') || 
+                           element.querySelector('.page') ||
+                           element.querySelector('[data-pdf-element="report"]')
+        if (pageElement) {
+          targetElement = pageElement as HTMLElement
+        }
+        
         // Mobile compatibility: Scroll element into view and ensure visibility
-        element.scrollIntoView({ behavior: 'instant', block: 'start', inline: 'nearest' })
+        targetElement.scrollIntoView({ behavior: 'instant', block: 'start', inline: 'nearest' })
         
-        // Wait for element to be in view
-        await new Promise(resolve => setTimeout(resolve, 100))
+        // Wait for element to be in view and for any animations to complete
+        await new Promise(resolve => setTimeout(resolve, isMobile ? 200 : 150))
         
-        // Store original styles for restoration
+        // Store original styles for restoration (use targetElement)
         originalStyles = {
-          position: element.style.position,
-          top: element.style.top,
-          left: element.style.left,
-          zIndex: element.style.zIndex,
-          visibility: element.style.visibility,
-          opacity: element.style.opacity,
-          transform: element.style.transform,
-          width: element.style.width,
-          minWidth: element.style.minWidth,
-          maxWidth: element.style.maxWidth,
+          position: targetElement.style.position,
+          top: targetElement.style.top,
+          left: targetElement.style.left,
+          zIndex: targetElement.style.zIndex,
+          visibility: targetElement.style.visibility,
+          opacity: targetElement.style.opacity,
+          transform: targetElement.style.transform,
+          width: targetElement.style.width,
+          minWidth: targetElement.style.minWidth,
+          maxWidth: targetElement.style.maxWidth,
+          height: targetElement.style.height,
+          minHeight: targetElement.style.minHeight,
+          maxHeight: targetElement.style.maxHeight,
         }
         
         // Force element to be visible and properly positioned for capture
-        element.style.position = 'relative'
-        element.style.visibility = 'visible'
-        element.style.opacity = '1'
-        element.style.zIndex = '9999'
-        element.style.transform = 'none'
+        targetElement.style.position = 'relative'
+        targetElement.style.visibility = 'visible'
+        targetElement.style.opacity = '1'
+        targetElement.style.zIndex = '9999'
+        targetElement.style.transform = 'none'
+        targetElement.style.scale = '1'
+        targetElement.style.zoom = '1'
+        
+        // Remove any parent transforms that might affect capture
+        let parent = targetElement.parentElement
+        while (parent && parent !== document.body) {
+          const parentStyle = window.getComputedStyle(parent)
+          if (parentStyle.transform && parentStyle.transform !== 'none') {
+            // Save original transform for restoration
+            ;(parent as any).__pdfOriginalTransform = (parent as HTMLElement).style.transform || ''
+            ;(parent as HTMLElement).style.setProperty('transform', 'none', 'important')
+            ;(parent as HTMLElement).style.setProperty('scale', '1', 'important')
+          }
+          // Also remove any overflow hidden that might clip content
+          if (parentStyle.overflow === 'hidden' || parentStyle.overflowY === 'hidden') {
+            ;(parent as any).__pdfOriginalOverflow = (parent as HTMLElement).style.overflow || ''
+            ;(parent as HTMLElement).style.setProperty('overflow', 'visible', 'important')
+          }
+          parent = parent.parentElement
+        }
         
         // Force desktop layout for consistent PDF output regardless of device
-        const originalClasses = element.className
-        element.classList.add("pdf-compact-mode", "pdf-desktop-layout", "pdf-force-desktop")
+        const originalClasses = targetElement.className
+        targetElement.classList.add("pdf-compact-mode", "pdf-desktop-layout", "pdf-force-desktop")
         if (options.tier === "hd") {
-          element.classList.add("hd-mode")
+          targetElement.classList.add("hd-mode")
         }
         
         // Ensure fixed A4 dimensions and prevent responsive stacking
-        element.style.width = "210mm"
-        element.style.minWidth = "210mm"
-        element.style.maxWidth = "210mm"
+        targetElement.style.width = "210mm"
+        targetElement.style.minWidth = "210mm"
+        targetElement.style.maxWidth = "210mm"
+        targetElement.style.height = "auto"
+        targetElement.style.minHeight = "auto"
+        targetElement.style.maxHeight = "none"
         
         // Force desktop layout - prevent mobile stacking
         // Apply comprehensive layout fixes to all elements
-        const allChildren = element.querySelectorAll('*')
+        const allChildren = targetElement.querySelectorAll('*')
         allChildren.forEach((child: any) => {
           if (child.style) {
             // Get computed styles to check current layout
@@ -109,11 +144,30 @@ export function usePDFGenerator() {
               }
             }
             
-            // Force flex containers to row direction
+            // Force flex containers to row direction (except certificate section)
             if (display === 'flex' || child.classList.contains('flex')) {
+              // Check if this is the certificate section flex container
+              const isCertificateFlex = child.getAttribute('data-certificate-layout') === 'true' ||
+                                       (child.closest('.certificate-container') && 
+                                        (child.classList.contains('justify-between') || 
+                                         child.classList.contains('items-end')))
+              
               child.style.setProperty('display', 'flex', 'important')
-              if (child.classList.contains('flex-col')) {
+              if (isCertificateFlex) {
+                // Preserve certificate layout: justify-between and items-end
+                child.style.setProperty('justify-content', 'space-between', 'important')
+                child.style.setProperty('align-items', 'flex-end', 'important')
                 child.style.setProperty('flex-direction', 'row', 'important')
+                child.style.setProperty('flex-wrap', 'nowrap', 'important')
+              } else if (child.classList.contains('flex-col')) {
+                // Only force row if not in certificate section
+                if (!child.closest('.certificate-container')) {
+                  child.style.setProperty('flex-direction', 'row', 'important')
+                } else {
+                  // Preserve flex-col in certificate section
+                  child.style.setProperty('flex-direction', 'column', 'important')
+                  child.style.setProperty('flex-shrink', '0', 'important')
+                }
               } else {
                 child.style.setProperty('flex-direction', 'row', 'important')
               }
@@ -132,25 +186,24 @@ export function usePDFGenerator() {
           }
         })
         
-        // Mobile: Ensure parent containers don't clip content
-        let parent = element.parentElement
-        while (parent && parent !== document.body) {
-          const parentStyle = window.getComputedStyle(parent)
-          if (parentStyle.overflow === 'hidden' || parentStyle.overflowY === 'hidden') {
-            parent.style.setProperty('overflow', 'visible', 'important')
-          }
-          parent = parent.parentElement
-        }
-        
         // Longer delay on mobile to ensure rendering is complete
-        await new Promise(resolve => setTimeout(resolve, isMobile ? 300 : 150))
-
+        await new Promise(resolve => setTimeout(resolve, isMobile ? 400 : 200))
+        
         // Step 1: Capture element as canvas (25% progress)
         setGenerationProgress(25)
         
         // Validate element dimensions before capture
-        const elementWidth = element.scrollWidth || element.offsetWidth || 794 // 210mm in px
-        const elementHeight = element.scrollHeight || element.offsetHeight || 1123 // 297mm in px
+        const elementWidth = targetElement.scrollWidth || targetElement.offsetWidth || 794 // 210mm in px
+        // Force max height to 297mm (A4 page height) to ensure single page
+        const maxPageHeight = 297 * 3.779527559 // 297mm in pixels at 96 DPI
+        let elementHeight = targetElement.scrollHeight || targetElement.offsetHeight || 1123
+        // Cap height at A4 page height
+        if (elementHeight > maxPageHeight) {
+          elementHeight = maxPageHeight
+          // Apply max height constraint to element
+          targetElement.style.maxHeight = '297mm'
+          targetElement.style.overflowY = 'hidden'
+        }
         
         if (elementWidth === 0 || elementHeight === 0) {
           throw new Error(`Invalid element dimensions: ${elementWidth}x${elementHeight}. Element may not be visible.`)
@@ -170,19 +223,25 @@ export function usePDFGenerator() {
           height: elementHeight,
           imageTimeout: isMobile ? 15000 : 10000,
           foreignObjectRendering: false,
+          removeContainer: false,
+          // Ensure we capture the exact element without transforms
+          x: 0,
+          y: 0,
+          scrollX: 0,
+          scrollY: 0,
         }
         
-        // Only add window dimensions if they're valid
-        if (window.innerWidth > 0 && window.innerHeight > 0) {
-          canvasOptions.windowWidth = isMobile ? 210 * 3.779527559 : Math.max(window.innerWidth, 794)
-          canvasOptions.windowHeight = Math.max(window.innerHeight, 1123)
-        }
+        // Only add window dimensions if they're valid - use fixed A4 dimensions
+        const fixedWidth = 210 * 3.779527559 // 210mm in pixels at 96 DPI
+        const fixedHeight = 297 * 3.779527559 // 297mm in pixels at 96 DPI
+        canvasOptions.windowWidth = fixedWidth
+        canvasOptions.windowHeight = Math.max(elementHeight, fixedHeight)
         
         // Add onclone callback
         canvasOptions.onclone = (clonedDoc: Document) => {
           try {
             // Ensure cloned element is visible
-            const clonedElement = clonedDoc.querySelector(`[data-pdf-element="${element.getAttribute('data-pdf-element') || 'report'}"]`) || 
+            const clonedElement = clonedDoc.querySelector(`[data-pdf-element="${targetElement.getAttribute('data-pdf-element') || 'report'}"]`) || 
                                  clonedDoc.body.querySelector('.page') ||
                                  clonedDoc.body.firstElementChild
             if (clonedElement) {
@@ -192,6 +251,8 @@ export function usePDFGenerator() {
               clonedEl.style.width = '210mm'
               clonedEl.style.minWidth = '210mm'
               clonedEl.style.maxWidth = '210mm'
+              clonedEl.style.maxHeight = '297mm'
+              clonedEl.style.overflowY = 'hidden'
               clonedEl.style.display = 'block'
               clonedEl.style.boxSizing = 'border-box'
               
@@ -222,14 +283,47 @@ export function usePDFGenerator() {
                     }
                   }
                   
-                  // Force flex to row
+                  // Force flex to row (except certificate section which needs specific layout)
                   if (hasFlex || child.style.display === 'flex') {
+                    // Check if this is the certificate section flex container
+                    const isCertificateFlex = child.getAttribute('data-certificate-layout') === 'true' ||
+                                             (child.closest('.certificate-container') && 
+                                              (child.classList.contains('justify-between') || 
+                                               child.style.justifyContent === 'space-between' ||
+                                               child.classList.contains('items-end')))
+                    
                     child.style.setProperty('display', 'flex', 'important')
-                    if (child.classList.contains('flex-col')) {
+                    if (isCertificateFlex) {
+                      // Preserve certificate layout: justify-between and items-end
+                      child.style.setProperty('justify-content', 'space-between', 'important')
+                      child.style.setProperty('align-items', 'flex-end', 'important')
                       child.style.setProperty('flex-direction', 'row', 'important')
+                      child.style.setProperty('flex-wrap', 'nowrap', 'important')
+                    } else if (child.classList.contains('flex-col')) {
+                      // Only force row if not in certificate section
+                      if (!child.closest('.certificate-container')) {
+                        child.style.setProperty('flex-direction', 'row', 'important')
+                      }
                     } else {
                       child.style.setProperty('flex-direction', 'row', 'important')
                     }
+                  }
+                  
+                  // Preserve certificate section child flex-col elements
+                  if (child.classList.contains('flex-col') && child.closest('.certificate-container')) {
+                    child.style.setProperty('display', 'flex', 'important')
+                    child.style.setProperty('flex-direction', 'column', 'important')
+                    child.style.setProperty('flex-shrink', '0', 'important')
+                  }
+                  
+                  // Preserve payment section margins for proper centering
+                  if (child.getAttribute('data-payment-section') === 'true' || 
+                      (child.classList.contains('flex-1') && child.closest('.certificate-container') && child.textContent?.includes('PAYMENT'))) {
+                    // Preserve or apply margins for payment section
+                    const marginLeft = child.style.marginLeft || '12px'
+                    const marginRight = child.style.marginRight || '12px'
+                    child.style.setProperty('margin-left', marginLeft, 'important')
+                    child.style.setProperty('margin-right', marginRight, 'important')
                   }
                   
                   child.style.setProperty('box-sizing', 'border-box', 'important')
@@ -244,7 +338,7 @@ export function usePDFGenerator() {
           }
         }
         
-        const canvas = await html2canvas(element, canvasOptions).catch((canvasError) => {
+        const canvas = await html2canvas(targetElement, canvasOptions).catch((canvasError) => {
           console.error("html2canvas error:", canvasError)
           throw new Error(`Canvas capture failed: ${canvasError instanceof Error ? canvasError.message : 'Unknown error'}`)
         })
@@ -273,7 +367,15 @@ export function usePDFGenerator() {
         let imgWidth = usableWidth
         let imgHeight = imgWidth / imgAspectRatio
 
-        // If content is taller than one page, split across multiple pages
+        // Force single page - scale down if content exceeds page height
+        if (imgHeight > usableHeight) {
+          // Scale down to fit on one page
+          const scale = usableHeight / imgHeight
+          imgHeight = usableHeight
+          imgWidth = imgWidth * scale
+        }
+
+        // If content is still taller than one page (shouldn't happen now), split across multiple pages
         if (imgHeight > usableHeight) {
           const totalPages = Math.ceil(imgHeight / usableHeight)
           let sourceY = 0
@@ -375,23 +477,52 @@ export function usePDFGenerator() {
       } finally {
         // Ensure cleanup even on error - restore original styles
         try {
-          element.classList.remove("pdf-compact-mode", "pdf-desktop-layout", "pdf-force-desktop", "hd-mode")
+          // Find target element again for cleanup
+          let targetElement = element
+          const pageElement = element.querySelector('.page[data-pdf-element="report"]') || 
+                             element.querySelector('.page') ||
+                             element.querySelector('[data-pdf-element="report"]')
+          if (pageElement) {
+            targetElement = pageElement as HTMLElement
+          }
+          
+          targetElement.classList.remove("pdf-compact-mode", "pdf-desktop-layout", "pdf-force-desktop", "hd-mode")
           
           // Restore original styles
           if (originalStyles) {
             Object.entries(originalStyles).forEach(([prop, value]) => {
               if (value) {
-                element.style.setProperty(prop, value)
+                targetElement.style.setProperty(prop, value)
               } else {
-                element.style.removeProperty(prop)
+                targetElement.style.removeProperty(prop)
               }
             })
           }
           
-          // Restore parent overflow styles
-          let parent = element.parentElement
+          // Restore parent overflow and transform styles
+          let parent = targetElement.parentElement
           while (parent && parent !== document.body) {
-            parent.style.removeProperty('overflow')
+            // Restore overflow
+            const savedOverflow = (parent as any).__pdfOriginalOverflow
+            if (savedOverflow !== undefined) {
+              if (savedOverflow) {
+                (parent as HTMLElement).style.overflow = savedOverflow
+              } else {
+                (parent as HTMLElement).style.removeProperty('overflow')
+              }
+              delete (parent as any).__pdfOriginalOverflow
+            }
+            
+            // Restore parent transforms if they were saved
+            const savedTransform = (parent as any).__pdfOriginalTransform
+            if (savedTransform !== undefined) {
+              if (savedTransform) {
+                (parent as HTMLElement).style.transform = savedTransform
+              } else {
+                (parent as HTMLElement).style.removeProperty('transform')
+              }
+              delete (parent as any).__pdfOriginalTransform
+            }
             parent = parent.parentElement
           }
         } catch (e) {

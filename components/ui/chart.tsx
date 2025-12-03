@@ -1,9 +1,11 @@
 "use client"
 
 import * as React from "react"
-import * as RechartsPrimitive from "recharts"
-
+import dynamic from "next/dynamic"
 import { cn } from "@/lib/utils"
+
+// Dynamically import recharts to avoid SSR issues
+const RechartsPrimitive = dynamic(() => import("recharts"), { ssr: false }) as any
 
 // Format: { THEME_NAME: CSS_SELECTOR }
 const THEMES = { light: "", dark: ".dark" } as const

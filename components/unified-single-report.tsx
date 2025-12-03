@@ -19,6 +19,7 @@ import { usePDFGenerator } from "@/hooks/use-pdf-generator"
 import { useSettings } from "@/hooks/use-settings"
 import { useSavedReports } from "@/hooks/use-saved-reports"
 import { useToast } from "@/hooks/use-toast"
+import html2canvas from "html2canvas"
 import {
   FileText,
   BarChart3,
@@ -162,7 +163,7 @@ const getStudentLevel = (theoryScore: number, practicalScore: number, attendance
 }
 
 export function UnifiedSingleReport(props: UnifiedSingleReportProps) {
-  const [formData, setFormData] = useState<FormData>(initialFormData)
+  const [formData, setFormData] = useState<FormData>({ ...initialFormData, showPaymentDetails: false })
   const [selectedTier, setSelectedTier] = useState<"minimal" | "standard" | "hd">("standard")
   const [showPreview, setShowPreview] = useState(false)
   const [showPrintPreview, setShowPrintPreview] = useState(false)
@@ -172,6 +173,13 @@ export function UnifiedSingleReport(props: UnifiedSingleReportProps) {
   const [isAutoSaving, setIsAutoSaving] = useState(false)
   const [validationErrors, setValidationErrors] = useState<{ [key: string]: string }>({})
   const [uploadProgress, setUploadProgress] = useState(0)
+  
+  // Ensure showPaymentDetails is false by default on mount
+  useEffect(() => {
+    if (formData.showPaymentDetails === undefined || formData.showPaymentDetails === true) {
+      setFormData(prev => ({ ...prev, showPaymentDetails: false }))
+    }
+  }, [])
   
   // Enhanced AI Generation Features
   const [showAIPanel, setShowAIPanel] = useState(false)
