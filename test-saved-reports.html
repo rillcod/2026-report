@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Saved Reports</title>
+</head>
+<body>
+    <h1>Saved Reports Debug</h1>
+    <button onclick="checkLocalStorage()">Check localStorage</button>
+    <button onclick="addTestReport()">Add Test Report</button>
+    <button onclick="clearReports()">Clear Reports</button>
+    <div id="output"></div>
+
+    <script>
+        function checkLocalStorage() {
+            const savedData = localStorage.getItem("rillcodSavedReports");
+            const output = document.getElementById("output");
+            
+            if (savedData) {
+                try {
+                    const reports = JSON.parse(savedData);
+                    output.innerHTML = `<h3>Found ${reports.length} reports:</h3><pre>${JSON.stringify(reports, null, 2)}</pre>`;
+                } catch (e) {
+                    output.innerHTML = `<h3>Error parsing reports:</h3><pre>${e.message}</pre>`;
+                }
+            } else {
+                output.innerHTML = "<h3>No saved reports found in localStorage</h3>";
+            }
+        }
+
+        function addTestReport() {
+            const testReport = {
+                id: Date.now().toString(),
+                studentName: "Test Student",
+                tier: "standard",
+                screenshotUrl: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==",
+                timestamp: new Date().toISOString(),
+                reportData: { test: true }
+            };
+
+            const existing = localStorage.getItem("rillcodSavedReports");
+            let reports = [];
+            
+            if (existing) {
+                try {
+                    reports = JSON.parse(existing);
+                } catch (e) {
+                    console.error("Error parsing existing reports:", e);
+                }
+            }
+            
+            reports.push(testReport);
+            localStorage.setItem("rillcodSavedReports", JSON.stringify(reports));
+            
+            document.getElementById("output").innerHTML = `<h3>Added test report. Total reports: ${reports.length}</h3>`;
+        }
+
+        function clearReports() {
+            localStorage.removeItem("rillcodSavedReports");
+            document.getElementById("output").innerHTML = "<h3>Cleared all reports</h3>";
+        }
+
+        // Auto-check on load
+        window.onload = checkLocalStorage;
+    </script>
+</body>
+</html>

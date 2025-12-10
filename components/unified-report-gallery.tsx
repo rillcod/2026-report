@@ -78,22 +78,23 @@ export function UnifiedReportGallery({ reports, onViewReport, onDeleteReport }: 
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [isDownloading, setIsDownloading] = useState(false)
   const [viewingReport, setViewingReport] = useState<GeneratedReport | null>(null)
-  const { savedReports, loadSavedReports, deleteReport, isLoading } = useSavedReports()
+  const { savedReports, loadSavedReports, deleteReport, addReport, isLoading } = useSavedReports()
   const { toast } = useToast()
 
   // Load saved reports on component mount
   useEffect(() => {
+    console.log("Gallery - Loading saved reports, current count:", savedReports.length)
     if (savedReports.length === 0) {
       loadSavedReports()
     }
-  }, [loadSavedReports, savedReports.length])
+  }, [savedReports.length]) // Remove loadSavedReports from dependencies to prevent infinite loop
 
   // Combine props reports with saved reports (memoized)
   const allReports = useMemo(() => [
     ...reports,
     ...savedReports.map((report) => ({
       id: report.id,
-      screenshotUrl: report.screenshotUrl || "/images/report-default.png",
+      screenshotUrl: report.screenshotUrl || report.screenshotThumbnail || "/images/report-default.png",
       studentName: report.studentName,
       tier: report.tier || "standard",
       reportData: report.reportData,
@@ -101,6 +102,13 @@ export function UnifiedReportGallery({ reports, onViewReport, onDeleteReport }: 
       additionalData: report.additionalData,
     })),
   ], [reports, savedReports])
+
+  // Debug logging (moved after allReports definition)
+  useEffect(() => {
+    console.log("Gallery - Props reports:", reports)
+    console.log("Gallery - Saved reports from hook:", savedReports)
+    console.log("Gallery - All reports combined:", allReports)
+  }, [reports, savedReports]) // Remove allReports from dependencies to prevent infinite loop
 
   // Filter and sort reports (memoized for performance)
   const filteredAndSortedReports = useMemo(() => {
@@ -201,7 +209,7 @@ export function UnifiedReportGallery({ reports, onViewReport, onDeleteReport }: 
   const handleRefresh = useCallback(async () => {
     setIsRefreshing(true)
     try {
-      await loadSavedReports()
+      loadSavedReports()
       toast({
         title: "Gallery Refreshed",
         description: "Report gallery has been refreshed successfully.",
@@ -217,9 +225,35 @@ export function UnifiedReportGallery({ reports, onViewReport, onDeleteReport }: 
     }
   }, [loadSavedReports, toast])
 
+  const handleAddTestReport = useCallback(async () => {
+    try {
+      await addReport({
+        studentName: "Test Student " + Date.now(),
+        tier: "standard",
+        screenshotUrl: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==",
+        reportData: { test: true }
+      })
+      toast({
+        title: "Test Report Added",
+        description: "A test report has been added to the gallery."
+      })
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to add test report.",
+        variant: "destructive"
+      })
+    }
+  }, [addReport, toast])
+
   const handleViewReport = useCallback((report: GeneratedReport) => {
-    setViewingReport(report)
-  }, [])
+    // Use the prop callback if provided, otherwise use internal viewing
+    if (onViewReport) {
+      onViewReport(report)
+    } else {
+      setViewingReport(report)
+    }
+  }, [onViewReport])
 
   const handleBackToGallery = useCallback(() => {
     setViewingReport(null)
@@ -289,6 +323,9 @@ export function UnifiedReportGallery({ reports, onViewReport, onDeleteReport }: 
               <Button variant="outline" size="sm" onClick={handleRefresh} disabled={isRefreshing || isLoading}>
                 <RefreshCw className={`h-4 w-4 mr-1 ${(isRefreshing || isLoading) ? "animate-spin" : ""}`} />
                 {isRefreshing ? "Refreshing..." : "Refresh"}
+              </Button>
+              <Button variant="outline" size="sm" onClick={handleAddTestReport}>
+                Add Test Report
               </Button>
             </div>
           </div>

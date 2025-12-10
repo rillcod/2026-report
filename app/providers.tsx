@@ -6,6 +6,7 @@ import { ThemeProvider } from "next-themes"
 import { useState, useEffect } from "react"
 import { Toaster } from "@/components/ui/toaster"
 import { SavedReportsProvider } from "@/hooks/use-saved-reports"
+import { SettingsProvider } from "@/hooks/use-settings"
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false)
@@ -20,10 +21,12 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <ThemeProvider attribute="class" defaultTheme="light" enableSystem={true}>
-      <SavedReportsProvider>
-        {children}
-        <Toaster />
-      </SavedReportsProvider>
+      <SettingsProvider>
+        <SavedReportsProvider>
+          {children}
+          <Toaster />
+        </SavedReportsProvider>
+      </SettingsProvider>
     </ThemeProvider>
   )
 }

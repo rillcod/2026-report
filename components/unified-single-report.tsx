@@ -370,24 +370,35 @@ export function UnifiedSingleReport(props: UnifiedSingleReportProps) {
   const validateForm = (): boolean => {
     const errors: { [key: string]: string } = {}
 
-    if (!formData.studentName.trim()) {
+    // Required fields
+    if (!formData.studentName || !formData.studentName.trim()) {
       errors.studentName = "Student name is required"
     }
 
-    if (!formData.schoolName.trim()) {
+    if (!formData.schoolName || !formData.schoolName.trim()) {
       errors.schoolName = "School name is required"
     }
 
-    if (formData.theoryScore && (isNaN(Number(formData.theoryScore)) || Number(formData.theoryScore) < 0 || Number(formData.theoryScore) > 100)) {
-      errors.theoryScore = "Theory score must be between 0 and 100"
+    // Optional numeric fields - validate only if provided
+    if (formData.theoryScore && formData.theoryScore !== "") {
+      const score = Number(formData.theoryScore)
+      if (isNaN(score) || score < 0 || score > 100) {
+        errors.theoryScore = "Theory score must be between 0 and 100"
+      }
     }
 
-    if (formData.practicalScore && (isNaN(Number(formData.practicalScore)) || Number(formData.practicalScore) < 0 || Number(formData.practicalScore) > 100)) {
-      errors.practicalScore = "Practical score must be between 0 and 100"
+    if (formData.practicalScore && formData.practicalScore !== "") {
+      const score = Number(formData.practicalScore)
+      if (isNaN(score) || score < 0 || score > 100) {
+        errors.practicalScore = "Practical score must be between 0 and 100"
+      }
     }
 
-    if (formData.attendance && (isNaN(Number(formData.attendance)) || Number(formData.attendance) < 0 || Number(formData.attendance) > 100)) {
-      errors.attendance = "Attendance must be between 0 and 100"
+    if (formData.attendance && formData.attendance !== "") {
+      const score = Number(formData.attendance)
+      if (isNaN(score) || score < 0 || score > 100) {
+        errors.attendance = "Attendance must be between 0 and 100"
+      }
     }
 
     setValidationErrors(errors)
@@ -614,6 +625,12 @@ export function UnifiedSingleReport(props: UnifiedSingleReportProps) {
           additionalData: { settings: reportSettings },
         })
 
+        // Call the callback to notify parent component
+        if (onReportGenerated) {
+          const reportId = Date.now().toString()
+          onReportGenerated(reportId, screenshotUrl, { settings: reportSettings })
+        }
+
         toast({
           title: "Report Saved",
           description: `Report for ${formData.studentName} has been saved successfully.`,
@@ -634,17 +651,23 @@ export function UnifiedSingleReport(props: UnifiedSingleReportProps) {
     // Find the report element - prioritize the actual .page element
     let reportElement: HTMLElement | null = null
     
+    console.log("PDF Download - Looking for report element...")
+    console.log("PDF Download - reportRef.current:", reportRef.current)
+    
     // First try to find the .page element (the actual report content)
     reportElement = document.querySelector('.page[data-pdf-element="report"]') as HTMLElement ||
                     document.querySelector('.page') as HTMLElement ||
                     reportRef.current?.querySelector('.page') as HTMLElement ||
                     reportRef.current
     
+    console.log("PDF Download - Found report element:", reportElement)
+    
     // Fallback: try other selectors
     if (!reportElement) {
       reportElement = document.querySelector('[data-pdf-element="report"]') as HTMLElement ||
                       document.querySelector('.report-content') as HTMLElement ||
                       reportRef.current
+      console.log("PDF Download - Fallback element:", reportElement)
     }
     
     if (!reportElement) {

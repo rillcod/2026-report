@@ -40,14 +40,16 @@ export function UnifiedAIContentGenerator({
       id: "strengths",
       label: "Key Strengths",
       icon: <Target className="h-4 w-4" />,
-      description: "Highlight student's strongest areas and achievements",
+      description: "AI-powered analysis of student's strongest areas and achievements",
       color: "text-green-600",
+      bgColor: "bg-green-50",
+      borderColor: "border-green-200",
     },
     {
       id: "growth",
       label: "Areas for Growth",
       icon: <TrendingUp className="h-4 w-4" />,
-      description: "Identify improvement opportunities and development areas",
+      description: "Intelligent identification of improvement opportunities",
       color: "text-orange-600",
     },
     {
@@ -91,47 +93,208 @@ export function UnifiedAIContentGenerator({
       const practicalScore = Number(currentData.practicalScore) || 0
       const attendance = Number(currentData.attendance) || 0
       const avgScore = (theoryScore + practicalScore + attendance) / 3
+      const course = currentData.courseName || currentData.course || "Programming"
+      
+      // AI-powered performance analysis
+      const performanceLevel = avgScore >= 90 ? "exceptional" : 
+                              avgScore >= 85 ? "advanced" :
+                              avgScore >= 75 ? "proficient" :
+                              avgScore >= 65 ? "developing" : "emerging"
+      
+      const learningStyle = theoryScore > practicalScore + 10 ? "theoretical" :
+                           practicalScore > theoryScore + 10 ? "hands-on" : "balanced"
 
       let content = ""
 
       switch (type) {
         case "strengths":
           const strengths = []
-          if (theoryScore >= 85) strengths.push("Excellent theoretical understanding and concept mastery")
-          if (practicalScore >= 85) strengths.push("Outstanding practical application and hands-on skills")
-          if (attendance >= 95) strengths.push("Exceptional attendance and commitment to learning")
-          if (currentData.participation === "Excellent") strengths.push("Active class participation and engagement")
-          if (avgScore >= 80) strengths.push("Consistent high performance across all areas")
-          if (strengths.length === 0) {
-            strengths.push("Shows willingness to learn and improve")
-            strengths.push("Demonstrates effort in coursework")
+          
+          // Performance-based strengths
+          if (theoryScore >= 90) strengths.push("Exceptional mastery of theoretical concepts with deep analytical thinking")
+          else if (theoryScore >= 85) strengths.push("Strong theoretical foundation with excellent conceptual understanding")
+          else if (theoryScore >= 75) strengths.push("Solid grasp of core theoretical principles")
+          
+          if (practicalScore >= 90) strengths.push("Outstanding practical implementation skills with creative problem-solving")
+          else if (practicalScore >= 85) strengths.push("Excellent hands-on abilities with strong technical execution")
+          else if (practicalScore >= 75) strengths.push("Good practical application of learned concepts")
+          
+          if (attendance >= 95) strengths.push("Exemplary commitment with perfect attendance record")
+          else if (attendance >= 90) strengths.push("Excellent attendance demonstrating strong dedication")
+          else if (attendance >= 85) strengths.push("Consistent attendance showing good commitment")
+          
+          // Learning style strengths
+          if (learningStyle === "theoretical") {
+            strengths.push("Natural aptitude for abstract thinking and conceptual analysis")
+            strengths.push("Excels in understanding complex theoretical frameworks")
+          } else if (learningStyle === "hands-on") {
+            strengths.push("Strong kinesthetic learning abilities with practical focus")
+            strengths.push("Demonstrates excellent problem-solving through experimentation")
+          } else {
+            strengths.push("Well-balanced learning approach combining theory and practice")
+            strengths.push("Adaptable learning style suitable for diverse challenges")
           }
-          content = "• " + strengths.join("\n• ")
+          
+          // Course-specific strengths
+          if (course.toLowerCase().includes('programming') || course.toLowerCase().includes('coding')) {
+            if (practicalScore >= 85) strengths.push("Natural programming intuition with clean code implementation")
+            if (theoryScore >= 85) strengths.push("Strong algorithmic thinking and computational logic")
+          }
+          
+          if (strengths.length === 0) {
+            strengths.push("Shows genuine interest and curiosity in learning")
+            strengths.push("Demonstrates resilience and willingness to overcome challenges")
+            strengths.push("Maintains positive attitude toward skill development")
+          }
+          
+          content = "• " + strengths.slice(0, 5).join("\n• ")
           break
 
         case "growth":
           const growthAreas = []
-          if (theoryScore < 70) growthAreas.push("Focus on strengthening theoretical foundations and core concepts")
-          if (practicalScore < 70) growthAreas.push("Increase hands-on practice and coding exercises")
-          if (attendance < 80) growthAreas.push("Improve attendance consistency for better learning continuity")
-          if (currentData.participation !== "Excellent" && currentData.participation !== "Very Good") {
-            growthAreas.push("Enhance class participation and engagement")
+          
+          // Performance-based growth areas
+          if (theoryScore < 70) {
+            growthAreas.push("Strengthen theoretical foundations through additional concept review and practice")
+            growthAreas.push("Develop deeper analytical thinking skills through guided problem-solving")
+          } else if (theoryScore < 85) {
+            growthAreas.push("Advance theoretical understanding to achieve mastery level")
           }
+          
+          if (practicalScore < 70) {
+            growthAreas.push("Increase hands-on practice with structured coding exercises and projects")
+            growthAreas.push("Focus on practical application of theoretical concepts")
+          } else if (practicalScore < 85) {
+            growthAreas.push("Refine practical skills through more complex implementation challenges")
+          }
+          
+          if (attendance < 80) {
+            growthAreas.push("Improve attendance consistency for optimal learning continuity and peer interaction")
+          } else if (attendance < 90) {
+            growthAreas.push("Maintain excellent attendance to maximize learning opportunities")
+          }
+          
+          // Learning style recommendations
+          if (learningStyle === "theoretical" && practicalScore < theoryScore - 5) {
+            growthAreas.push("Balance theoretical knowledge with more hands-on practical experience")
+            growthAreas.push("Engage in project-based learning to strengthen implementation skills")
+          } else if (learningStyle === "hands-on" && theoryScore < practicalScore - 5) {
+            growthAreas.push("Strengthen conceptual understanding to support practical skills")
+            growthAreas.push("Dedicate time to studying underlying principles and theory")
+          }
+          
+          // Performance level recommendations
+          if (performanceLevel === "exceptional") {
+            growthAreas.push("Explore advanced topics and consider mentoring opportunities")
+            growthAreas.push("Take on leadership roles in group projects and collaborative work")
+          } else if (performanceLevel === "emerging") {
+            growthAreas.push("Focus on building confidence through incremental skill development")
+            growthAreas.push("Seek additional support and practice opportunities")
+          }
+          
           if (growthAreas.length === 0) {
-            growthAreas.push("Continue challenging yourself with advanced concepts")
-            growthAreas.push("Explore additional learning resources and practice materials")
+            growthAreas.push("Continue challenging yourself with advanced concepts and real-world applications")
+            growthAreas.push("Explore specialized areas of interest within the field")
+            growthAreas.push("Consider contributing to open-source projects or community initiatives")
           }
-          content = "• " + growthAreas.join("\n• ")
+          
+          content = "• " + growthAreas.slice(0, 4).join("\n• ")
           break
 
         case "comments":
-          if (avgScore >= 85) {
-            content = `${studentName} has demonstrated exceptional performance throughout the course. Their strong grasp of both theoretical concepts and practical applications makes them a standout student. They consistently show initiative, ask thoughtful questions, and help create a positive learning environment. With continued dedication, they are well-prepared for advanced challenges and have the potential to excel in more complex programming concepts.`
-          } else if (avgScore >= 70) {
-            content = `${studentName} shows solid understanding of the course material with good performance in most areas. They demonstrate consistent effort and engagement in class activities. There are opportunities for improvement, particularly in ${theoryScore < practicalScore ? "theoretical concepts and foundational understanding" : "practical applications and hands-on implementation"}. Overall progress is commendable, and with focused practice, they can achieve even better results.`
+          // AI-powered personalized comments based on comprehensive analysis
+          const personalityTraits = []
+          const achievements = []
+          const recommendations = []
+          
+          // Analyze learning patterns
+          if (theoryScore > practicalScore + 15) {
+            personalityTraits.push("analytical thinker who excels in conceptual understanding")
+            recommendations.push("continue developing practical implementation skills to complement strong theoretical foundation")
+          } else if (practicalScore > theoryScore + 15) {
+            personalityTraits.push("hands-on learner with strong implementation abilities")
+            recommendations.push("strengthen theoretical knowledge to enhance problem-solving approaches")
           } else {
-            content = `${studentName} is developing foundational skills in the subject and shows willingness to learn. While there have been some challenges with ${theoryScore < 50 ? "theoretical concepts" : "practical implementation"}, they demonstrate persistence and effort. Additional practice, review sessions, and one-on-one support will help strengthen their understanding and build confidence in the material.`
+            personalityTraits.push("well-balanced learner who effectively combines theory with practice")
           }
+          
+          // Performance achievements
+          if (avgScore >= 90) {
+            achievements.push("consistently delivers exceptional work that exceeds expectations")
+            achievements.push("demonstrates mastery-level understanding of complex concepts")
+            personalityTraits.push("self-motivated learner who takes initiative in challenging situations")
+          } else if (avgScore >= 85) {
+            achievements.push("maintains high standards and delivers quality work consistently")
+            achievements.push("shows strong competency across all learning objectives")
+          } else if (avgScore >= 75) {
+            achievements.push("demonstrates solid progress and steady improvement")
+            achievements.push("shows good understanding of fundamental concepts")
+          } else if (avgScore >= 65) {
+            achievements.push("shows determination and willingness to tackle challenges")
+            personalityTraits.push("resilient learner who perseveres through difficulties")
+          }
+          
+          // Attendance-based insights
+          if (attendance >= 95) {
+            personalityTraits.push("highly committed individual with excellent attendance")
+            achievements.push("sets a positive example for peers through consistent participation")
+          } else if (attendance >= 85) {
+            personalityTraits.push("reliable student with good attendance habits")
+          } else if (attendance < 80) {
+            recommendations.push("improve attendance consistency to maximize learning opportunities and peer collaboration")
+          }
+          
+          // Course-specific insights
+          if (course.toLowerCase().includes('programming')) {
+            if (practicalScore >= 85) {
+              achievements.push("demonstrates natural programming intuition and clean coding practices")
+            }
+            if (theoryScore >= 85) {
+              achievements.push("exhibits strong algorithmic thinking and computational problem-solving skills")
+            }
+          }
+          
+          // Generate comprehensive comment
+          let commentParts = []
+          
+          // Opening with personality and achievements
+          if (personalityTraits.length > 0 && achievements.length > 0) {
+            commentParts.push(`${studentName} is ${personalityTraits[0]} who ${achievements[0]}.`)
+          }
+          
+          // Performance analysis
+          if (avgScore >= 85) {
+            commentParts.push(`Their ${performanceLevel} performance reflects deep engagement with the material and strong academic discipline.`)
+          } else if (avgScore >= 70) {
+            commentParts.push(`They demonstrate ${performanceLevel} understanding with consistent effort and positive learning attitude.`)
+          } else {
+            commentParts.push(`While developing foundational skills, they show genuine commitment to improvement and learning.`)
+          }
+          
+          // Specific strengths
+          if (achievements.length > 1) {
+            commentParts.push(`Notable strengths include their ability to ${achievements[1].toLowerCase()}.`)
+          }
+          
+          // Learning style and recommendations
+          if (learningStyle === "theoretical") {
+            commentParts.push(`As a conceptual learner, ${studentName} would benefit from more hands-on projects to apply their strong theoretical knowledge.`)
+          } else if (learningStyle === "hands-on") {
+            commentParts.push(`Their practical learning style is evident in their implementation work, and additional focus on underlying principles would enhance their problem-solving capabilities.`)
+          } else {
+            commentParts.push(`Their balanced approach to learning serves them well in both theoretical understanding and practical application.`)
+          }
+          
+          // Future outlook and recommendations
+          if (avgScore >= 85) {
+            commentParts.push(`${studentName} is well-prepared for advanced challenges and would excel in leadership or mentoring roles.`)
+          } else if (avgScore >= 70) {
+            commentParts.push(`With continued focus and practice, ${studentName} has the potential to achieve even higher levels of proficiency.`)
+          } else {
+            commentParts.push(`Additional support and structured practice will help ${studentName} build confidence and strengthen their foundational skills.`)
+          }
+          
+          content = commentParts.join(" ")
           break
 
         case "progressItems":
